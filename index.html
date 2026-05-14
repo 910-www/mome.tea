@@ -3,336 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Undersea Big Rich Man - Large Grid</title>
+<title>Undersea Big Rich Man</title>
 <style>
 :root {
-    --bg-color: #f4f1ea;
-    --text-main: #333333;
-    --text-sub: #7f7f7f;
-    --border-color: #d1d1d1;
-    --accent-red: #a63d40;
-    --accent-blue: #607d8b;
-    --accent-green: #849483;
-    --muji-tan: #e8e2d6;
+    --bg-color: #f4f1ea; --text-main: #333333; --text-sub: #7f7f7f;
+    --border-color: #d1d1d1; --accent-red: #a63d40; --accent-blue: #607d8b;
+    --accent-green: #849483; --muji-tan: #e8e2d6;
 }
-
-h1 { font-size: 15px; margin-bottom: 2px; }
-
 * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
-body { 
-    font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
-    background-color: var(--bg-color); 
-    color: var(--text-main); 
-    padding: 4px; 
-    display: flex; flex-direction: column; align-items: center; 
-}
-
-/* 遊戲地圖放大 */
-#game-container { 
-    width: 98vw; 
-    max-width: 500px; 
-    position: relative; 
-}
-
-/* 10x10 棋盤：重點在於格子尺寸感 */
-.board { 
-    display: grid; 
-    grid-template-columns: repeat(10, 1fr); 
-    grid-template-rows: repeat(10, 1fr); 
-    gap: 1.5px; /* 增加間隙讓格子更分明 */
-    background: var(--border-color); 
-    border: 2px solid var(--border-color);
-    width: 100%; 
-    aspect-ratio: 1 / 1; 
-    position: relative;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-}
-
-.cell { 
-    background: #fff; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; /* 內容居中 */
-    align-items: center;
-    padding: 7px; 
-    position: relative; 
-}
-
-/* 特殊格樣式維持，但飽和度稍微提高 */
+body { font-family: "PingFang TC", sans-serif; background-color: var(--bg-color); color: var(--text-main); padding: 4px; display: flex; flex-direction: column; align-items: center; }
+#game-container { width: 98vw; max-width: 500px; position: relative; }
+.board { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); gap: 1.5px; background: var(--border-color); border: 2px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; position: relative; }
+.cell { background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 7px; position: relative; }
 .cell.start-team0 { background: #fee2e2; }
 .cell.start-team1 { background: #e0f2fe; }
 .cell.start-team2 { background: #f0fdf4; }
 .cell.station { background: var(--muji-tan); }
 .cell.event-cell { background: #f5f3ff; }
-
-.cell-name { 
-    font-size: 11px; 
-    font-weight: 700; 
-    position: absolute; 
-    top: 1px; 
-    left: 1px; 
-    color: var(--text-sub);
-    transform: scale(0.8);
-    transform-origin: top left;
-}
-
-/* 垃圾圖示變大 */
-.cell-info { 
-    font-size: 14px; /* 從 8px 大幅增加到 14px */
-    line-height: 1;
-}
-
-/* 棋子也稍微放大 */
-.player-container { 
-    display: flex; 
-    gap: 1px; 
-    position: absolute; 
-    bottom: 1px; 
-    right: 1px; 
-    flex-wrap: wrap; 
-    justify-content: flex-end;
-    max-width: 90%; 
-}
-.player-token { 
-    width: 11px; height: 11px; border-radius: 50%; color: #fff; font-size: 7px; 
-    display: flex; align-items: center; justify-content: center; font-weight: bold;
-    border: 0.5px solid rgba(255,255,255,0.8);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
+.cell-name { font-size: 11px; font-weight: 700; position: absolute; top: 1px; left: 1px; color: var(--text-sub); transform: scale(0.8); transform-origin: top left; }
+.cell-info { font-size: 14px; line-height: 1; }
+.player-container { display: flex; gap: 1px; position: absolute; bottom: 1px; right: 1px; flex-wrap: wrap; justify-content: flex-end; max-width: 90%; }
+.player-token { width: 11px; height: 11px; border-radius: 50%; color: #fff; font-size: 7px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 0.5px solid rgba(255,255,255,0.8); }
 .t0-token { background: var(--accent-red); }
 .t1-token { background: var(--accent-blue); }
 .t2-token { background: var(--accent-green); }
-
-/* 中間資訊區：維持比例但排版緊湊 */
-.center-info {
-    grid-column: 2 / 10;
-    grid-row: 2 / 10;
-    background: rgba(255, 255, 255, 0.95);
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    padding: 8% 4%;
-    justify-content: space-evenly;
-    text-align: center;
-}
-
+.center-info { grid-column: 2 / 10; grid-row: 2 / 10; background: rgba(255, 255, 255, 0.95); z-index: 5; display: flex; flex-direction: column; padding: 5%; justify-content: space-evenly; text-align: center; }
 .center-turn { font-size: 14px; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 4px; }
 .center-scores { display: flex; justify-content: space-around; width: 100%; }
-.score-item { display: flex; flex-direction: column; }
 .score-val { font-size: 18px; font-weight: 800; }
 .score-label { font-size: 9px; opacity: 0.7; }
-
-.center-hp { font-size: 10px; color: #555; background: #fafaf8; padding: 6px; border-radius: 3px; line-height: 1.4; border: 1px solid #f0f0f0; }
-
-/* 控制區 */
+.center-hp { font-size: 10px; color: #555; background: #fafaf8; padding: 4px; border-radius: 3px; border: 1px solid #f0f0f0; }
 .controls { width: 100%; margin-top: 10px; }
 .action-row { display: flex; gap: 6px; margin-bottom: 8px; }
-button { 
-    flex: 1; padding: 12px 2px; font-size: 13px; cursor: pointer; 
-    background: #333; color: #fff; border: none; border-radius: 4px;
-}
+button { flex: 1; padding: 12px 2px; font-size: 13px; cursor: pointer; background: #333; color: #fff; border: none; border-radius: 4px; }
 button:disabled { background: #ddd; color: #999; }
-
-.hand-container { 
-    display: flex; gap: 8px; overflow-x: auto; padding: 5px 0;
-    -webkit-overflow-scrolling: touch;
-}
-.card-option { 
-    min-width: 118px; background: #fff; padding: 10px; border: 1px solid #ddd; 
-    border-radius: 4px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-.card-option b { font-size: 12px; display: block; margin-bottom: 2px; }
-.card-option span { font-size: 9px; color: #777; }
-.card-option.selected { border: 2px solid #333; padding: 9px; }
-
-#dice-result { height: 20px; font-weight: bold; color: var(--accent-red); margin-bottom: 5px; text-align: center; font-size: 14px; }
+.hand-container { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; }
+.card-option { min-width: 90px; border: 1px solid #ddd; border-radius: 4px; padding: 8px; background: #fff; text-align: left; cursor: pointer; }
+.card-option.selected { border: 2px solid #333; background: #f0f0f0; }
+.card-option b { font-size: 11px; display: block; }
+.card-option span { font-size: 9px; color: #666; }
+#dice-result { height: 20px; font-weight: bold; color: var(--accent-red); font-size: 14px; }
 </style>
 </head>
 <body>
-
 <div id="game-container">
     <div class="board" id="board">
         <div class="center-info">
             <div id="current-turn" class="center-turn">P1</div>
-            
             <div class="center-scores">
-                <div class="score-item" style="color:var(--accent-red)">
-                    <span id="t0-score" class="score-val">0</span>
-                    <span class="score-label">RED</span>
-                </div>
-                <div class="score-item" style="color:var(--accent-blue)">
-                    <span id="t1-score" class="score-val">0</span>
-                    <span class="score-label">BLUE</span>
-                </div>
-                <div class="score-item" style="color:var(--accent-green)">
-                    <span id="t2-score" class="score-val">0</span>
-                    <span class="score-label">GREEN</span>
-                </div>
+                <div class="score-item" style="color:var(--accent-red)"><span id="t0-score" class="score-val">0</span><br><span class="score-label">RED</span></div>
+                <div class="score-item" style="color:var(--accent-blue)"><span id="t1-score" class="score-val">0</span><br><span class="score-label">BLUE</span></div>
+                <div class="score-item" style="color:var(--accent-green)"><span id="t2-score" class="score-val">0</span><br><span class="score-label">GREEN</span></div>
             </div>
-
-            <div id="p-hp-info" class="center-hp">P1-P6 HP STATUS</div>
-            <h1>undersea big rich man</h1>
+            <div id="p-hp-info" class="center-hp">HP STATUS</div>
+            <h1 style="font-size:12px;">Undersea Big Rich Man</h1>
             <div id="dice-result"></div>
         </div>
     </div>
-
+    <div id="judge-box" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:3px solid #333; z-index:2000; text-align:center; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5);">
+        <h3 id="judge-title">判定</h3>
+        <p id="judge-desc" style="margin:10px 0; font-size:14px;">請誠實回報結果：</p>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <button onclick="handleJudge(true)" style="background:#4CAF50;">我贏了</button>
+            <button onclick="handleJudge(false)" style="background:#f44336;">我輸了</button>
+        </div>
+    </div>
     <div class="controls">
         <div class="action-row">
             <button id="roll-btn" onclick="rollDice()">🎲 擲骰移動</button>
             <button id="card-btn" onclick="playCard()" disabled>🧬 發動卡片</button>
             <button id="skip-card-btn" onclick="skipCard()" disabled>結束</button>
         </div>
-
         <div class="hand-container" id="hand-cards"></div>
     </div>
 </div>
 
 <script>
-// --- 數據結構 (維持 36 格路徑) ---
 const garbageTypes = [
-    { key: "tire", name: "輪胎", score: 5, icon: "🛞" },
-    { key: "net", name: "漁網", score: 4, icon: "🕸️" },
-    { key: "bag", name: "塑膠袋", score: 3, icon: "🛍️" },
-    { key: "bottle", name: "寶特瓶", score: 2, icon: "🍾" },
+    { key: "tire", name: "輪胎", score: 5, icon: "🛞" }, { key: "net", name: "漁網", score: 4, icon: "🕸️" },
+    { key: "bag", name: "塑膠袋", score: 3, icon: "🛍️" }, { key: "bottle", name: "寶特瓶", score: 2, icon: "🍾" },
     { key: "straw", name: "吸管", score: 1, icon: "🥤" }
 ];
-
 const cardPool = [
-    { id: "shrimp", name: "🦐 爆炸蝦", desc: "前進 2 格" },
-    { id: "shark", name: "🦈 冰凍鯊", desc: "前進 4 格" },
-    { id: "starfish", name: "⭐ 生命之星", desc: "隊友回 HP" },
-    { id: "whale", name: "🐋 鯨心膽跳", desc: "全隊滿 HP" },
-    { id: "turtle", name: "🐢 龜甲萬", desc: "免疫傷害" },
-    { id: "octopus", name: "🐙 章魚墨客", desc: "敵移動減半" },
-    { id: "shell", name: "🐚 貝感欣慰", desc: "飛向垃圾格" },
-    { id: "fish", name: "🐟 清道夫", desc: "吃垃圾回 HP" }
+    { id: "shrimp", name: "🦐 爆炸蝦", desc: "前進 2 格，撿垃圾" }, { id: "shark", name: "🦈 冰凍鯊", desc: "前進 4 格，撿垃圾" },
+    { id: "starfish", name: "⭐ 生命之星", desc: "回復 1 HP" }, { id: "whale", name: "🐋 鯨心膽跳", desc: "全隊伍 HP 補滿" },
+    { id: "turtle", name: "🐢 龜甲萬", desc: "防禦效果" }, { id: "octopus", name: "🐙 章魚墨客", desc: "對手停一輪" },
+    { id: "shell", name: "🐚 貝感欣慰", desc: "傳送至最近垃圾" }
+];
+const eventPool = [
+    { id: "evt_whale", name: "擱淺鯨魚", desc: "猜拳，贏家2分/輸家1分" }, { id: "evt_straw", name: "海龜吸管", desc: "對手走1步，己得1分" },
+    { id: "evt_oil", name: "海底漏油", desc: "全扣1HP，限2步" }, { id: "evt_net", name: "漁網", desc: "隨機對手被困" },
+    { id: "evt_sonar", name: "聲納", desc: "下輪限步 1" }, { id: "evt_earthquake", name: "海牛翻身", desc: "位置重組" },
+    { id: "evt_turtles", name: "海龜", desc: "扣 3 分" }
 ];
 
-const mapConfig = [];
-const eventPos = [3, 7, 12, 16, 21, 25, 30, 34];
-for (let i = 0; i < 36; i++) {
-    if (i === 0) mapConfig.push({ name: "R-START", type: "start-team0" });
-    else if (i === 9) mapConfig.push({ name: "B-START", type: "start-team1" });
-    else if (i === 18) mapConfig.push({ name: "G-START", type: "start-team2" });
-    else if ([5, 14, 23, 32].includes(i)) mapConfig.push({ name: "回收站", type: "station" });
-    else if (eventPos.includes(i)) mapConfig.push({ name: "事件", type: "event-cell" });
-    else {
-        let randG = Math.random() > 0.4 ? garbageTypes[Math.floor(Math.random()*5)] : null;
-        mapConfig.push({ name: i, type: "ocean", garbage: randG });
-    }
-}
-
-// 10x10 邊緣映射
-const gridMapping = [];
-for (let col = 0; col < 10; col++) gridMapping.push(col);
-for (let row = 1; row <= 8; row++) {
-    for (let col = 0; col < 10; col++) {
-        if (col === 0) gridMapping.push(36 - row);
-        else if (col === 9) gridMapping.push(9 + row);
-        else gridMapping.push(-1);
-    }
-}
-for (let col = 0; col < 10; col++) gridMapping.push(27 - col);
-
+let currentTurnPlayer = 0; let selectedCardIndex = null; let globalMaxSteps = 3; let globalSonarEffect = 0; let pendingJudgePlayer = null;
 const players = [
-    { id: 1, team: 0, hp: 5, position: 0 }, { id: 2, team: 0, hp: 5, position: 0 },
-    { id: 3, team: 1, hp: 5, position: 9 }, { id: 4, team: 1, hp: 5, position: 9 },
-    { id: 5, team: 2, hp: 5, position: 18 }, { id: 6, team: 2, hp: 5, position: 18 }
+    { id: 1, name: "P1", team: 0, hp: 5, position: 0, trap: false, bag: [] }, { id: 2, name: "P2", team: 0, hp: 5, position: 0, trap: false, bag: [] },
+    { id: 3, name: "P3", team: 1, hp: 5, position: 9, trap: false, bag: [] }, { id: 4, name: "P4", team: 1, hp: 5, position: 9, trap: false, bag: [] },
+    { id: 5, name: "P5", team: 2, hp: 5, position: 18, trap: false, bag: [] }, { id: 6, name: "P6", team: 2, hp: 5, position: 18, trap: false, bag: [] }
 ];
+const teams = [{ score: 0, hand: [] }, { score: 0, hand: [] }, { score: 0, hand: [] }];
+const mapConfig = [];
 
-const teams = [{score:0, hand:[]}, {score:0, hand:[]}, {score:0, hand:[]}];
-let currentTurnPlayer = 0;
-let selectedCardIndex = null;
+function showMsg(m, cb) { if(m) alert(m); if(cb) cb(); }
 
-teams.forEach(t => { for(let i=0; i<4; i++) t.hand.push(cardPool[Math.floor(Math.random()*8)]); });
+function initMapData() {
+    for (let i = 0; i < 36; i++) {
+        if (i === 0) mapConfig.push({ name: "紅", type: "start-team0" });
+        else if (i === 9) mapConfig.push({ name: "藍", type: "start-team1" });
+        else if (i === 18) mapConfig.push({ name: "綠", type: "start-team2" });
+        else if ([5, 14, 23, 32].includes(i)) mapConfig.push({ name: "回收", type: "station" });
+        else if ([3, 7, 12, 16, 21, 25, 30, 34].includes(i)) mapConfig.push({ name: "事件", type: "event-cell" });
+        else {
+            let rt = Math.random() > 0.4 ? garbageTypes[Math.floor(Math.random() * garbageTypes.length)] : null;
+            mapConfig.push({ name: i, type: "ocean", garbage: rt ? {...rt} : null });
+        }
+    }
+}
 
-function initBoard() {
+function renderBoard() {
     const board = document.getElementById("board");
     const center = board.querySelector(".center-info");
     board.innerHTML = ""; board.appendChild(center);
-    gridMapping.forEach(m => {
-        if(m === -1) return;
-        const d = mapConfig[m];
-        const cell = document.createElement("div");
-        cell.className = "cell " + d.type; cell.id = "cell-" + m;
-        let gIcon = d.garbage ? d.garbage.icon : "";
-        cell.innerHTML = `<span class="cell-name">${d.name}</span><div class="cell-info">${gIcon}</div><div class="player-container"></div>`;
-        board.appendChild(cell);
-    });
-    renderHand(); updateUI();
+    const getC = (i) => {
+        if (i <= 9) return { r: 1, c: i + 1 }; if (i <= 17) return { r: i - 8, c: 10 };
+        if (i <= 27) return { r: 10, c: 10 - (i - 18) }; return { r: 10 - (i - 27), c: 1 };
+    };
+    for(let i=0; i<36; i++) {
+        const d = mapConfig[i]; const {r, c} = getC(i);
+        const div = document.createElement("div"); div.className = `cell ${d.type}`; div.id = `cell-${i}`;
+        div.style.gridRow = r; div.style.gridColumn = c;
+        div.innerHTML = `<span class="cell-name">${d.name}</span><div class="cell-info">${d.garbage?d.garbage.icon:''}</div><div class="player-container"></div>`;
+        board.appendChild(div);
+    }
+    updateUI();
 }
 
 function updateUI() {
     document.querySelectorAll('.player-container').forEach(el => el.innerHTML = '');
     players.forEach(p => {
-        const container = document.querySelector("#cell-" + p.position + " .player-container");
+        const container = document.querySelector(`#cell-${p.position} .player-container`);
         if (container) {
-            const t = document.createElement("div");
-            t.className = `player-token t${p.team}-token`; t.innerText = p.id;
+            const t = document.createElement("div"); t.className = `player-token t${p.team}-token`; t.innerText = p.name;
             container.appendChild(t);
         }
     });
-    for(let i=0; i<3; i++) document.getElementById(`t${i}-score`).innerText = teams[i].score;
-    let hpStr = "";
-    players.forEach((p, idx) => {
-        hpStr += `P${p.id}:${p.hp} ${(idx+1)%3==0 ? '<br>' : '| '}`;
-    });
-    document.getElementById("p-hp-info").innerHTML = hpStr;
-    const p = players[currentTurnPlayer];
-    const teamColors = ["var(--accent-red)", "var(--accent-blue)", "var(--accent-green)"];
-    document.getElementById("current-turn").innerText = `PLAYER ${p.id} 回合`;
-    document.getElementById("current-turn").style.color = teamColors[p.team];
-}
-
-function renderHand() {
-    const handBox = document.getElementById("hand-cards");
-    handBox.innerHTML = ""; selectedCardIndex = null;
-    teams[players[currentTurnPlayer].team].hand.forEach((card, idx) => {
-        const c = document.createElement("div");
-        c.className = "card-option";
-        c.onclick = () => {
-            document.querySelectorAll('.card-option').forEach(el => el.classList.remove('selected'));
-            c.classList.add('selected'); selectedCardIndex = idx;
-            if(document.getElementById("roll-btn").disabled) document.getElementById("card-btn").disabled = false;
-        };
-        c.innerHTML = `<b>${card.name}</b><span>${card.desc}</span>`;
-        handBox.appendChild(c);
-    });
+    for (let i = 0; i < 3; i++) document.getElementById(`t${i}-score`).innerText = teams[i].score;
+    document.getElementById("p-hp-info").innerText = players.map(p => `${p.name}:${p.hp}${p.trap?'🕸️':''}`).join(" | ");
+    document.getElementById("current-turn").innerText = `輪到：${players[currentTurnPlayer].name}`;
+    renderHand();
 }
 
 function rollDice() {
-    document.getElementById("roll-btn").disabled = true;
-    const steps = Math.floor(Math.random() * 3) + 1;
-    document.getElementById("dice-result").innerText = `骰子：${steps} 步`;
     const p = players[currentTurnPlayer];
-    p.position = (p.position + steps) % 36;
-    const cell = mapConfig[p.position];
-    if(cell.garbage) { 
-        teams[p.team].score += cell.garbage.score; 
-        cell.garbage = null; 
-        document.querySelector(`#cell-${p.position} .cell-info`).innerText = ""; 
-    }
-    document.getElementById("skip-card-btn").disabled = false;
+    if (p.trap) { showMsg(`${p.name} 脫困！`); p.trap = false; endMovePhase(); return; }
+    let m = globalSonarEffect > 0 ? 1 : globalMaxSteps;
+    const dice = Math.floor(Math.random() * m) + 1;
+    document.getElementById("dice-result").innerText = `🎲 擲出 ${dice} 點`;
+    p.position = (p.position + dice) % 36;
+    checkGrid(p);
+    if (!pendingJudgePlayer) endMovePhase();
+}
+
+function endMovePhase() {
     updateUI();
+    document.getElementById("roll-btn").disabled = true;
+    document.getElementById("skip-card-btn").disabled = false;
+    if (globalSonarEffect > 0) globalSonarEffect--;
+    globalMaxSteps = 3;
+}
+
+function checkGrid(player) {
+    const c = mapConfig[player.position];
+    if(c.type === "ocean" && c.garbage) {
+        player.bag.push(c.garbage); showMsg(`${player.name} 撿到 ${c.garbage.name}`);
+        c.garbage = null; document.querySelector(`#cell-${player.position} .cell-info`).innerText = "";
+    }
+    if(c.type === "station" && player.bag.length > 0) {
+        let sc = player.bag.reduce((s, g) => s + g.score, 0); teams[player.team].score += sc;
+        player.bag = []; showMsg(`回收獲得 ${sc} 分！`);
+    }
+    if(c.type === "event-cell") {
+        const e = eventPool[Math.floor(Math.random()*eventPool.length)];
+        if(e.id === "evt_whale") { pendingJudgePlayer = player; document.getElementById("judge-box").style.display = "block"; }
+        else {
+            showMsg(`事件：${e.name}\n${e.desc}`);
+            if(e.id === "evt_straw") { teams[player.team].score += 1; }
+            else if(e.id === "evt_oil") { players.forEach(pl => pl.hp = Math.max(0, pl.hp - 1)); globalMaxSteps = 2; }
+            else if(e.id === "evt_net") { let target = players[Math.floor(Math.random()*6)]; if(target.id!==player.id) target.trap = true; }
+            else if(e.id === "evt_sonar") { globalSonarEffect = 2; }
+            else if(e.id === "evt_earthquake") { players.forEach(pl => pl.position = Math.floor(Math.random()*36)); }
+            else if(e.id === "evt_turtles") { teams[player.team].score = Math.max(0, teams[player.team].score - 3); }
+        }
+    }
+}
+
+function renderHand() {
+    const box = document.getElementById("hand-cards"); box.innerHTML = "";
+    const h = teams[players[currentTurnPlayer].team].hand;
+    h.forEach((c, i) => {
+        const d = document.createElement("div"); d.className = `card-option ${selectedCardIndex === i ? 'selected' : ''}`;
+        d.onclick = () => { selectedCardIndex = i; renderHand(); document.getElementById("card-btn").disabled = false; };
+        d.innerHTML = `<b>${c.name}</b><span>${c.desc}</span>`;
+        box.appendChild(d);
+    });
 }
 
 function playCard() {
-    if(selectedCardIndex === null) return;
-    const p = players[currentTurnPlayer];
-    teams[p.team].hand[selectedCardIndex] = cardPool[Math.floor(Math.random()*8)];
+    const p = players[currentTurnPlayer]; const team = teams[p.team]; const c = team.hand[selectedCardIndex];
+    if(c.id === "shrimp") { p.position = (p.position + 2) % 36; checkGrid(p); }
+    else if(c.id === "shark") { p.position = (p.position + 4) % 36; checkGrid(p); }
+    else if(c.id === "starfish") { p.hp = Math.min(5, p.hp + 1); }
+    else if(cardPool.id === "whale") { players.filter(pl => pl.team === p.team).forEach(pl => pl.hp = 5); }
+    else if(c.id === "octopus") { let targets = players.filter(pl => pl.team !== p.team); targets[Math.floor(Math.random()*targets.length)].trap = true; }
+    else if(c.id === "shell") {
+        let n = null, m = Infinity;
+        for(let i=0; i<36; i++) if(mapConfig[i].garbage) { let d = Math.abs(i-p.position); if(d<m){m=d; n=i;} }
+        if(n!==null) { p.position = n; checkGrid(p); }
+    }
+    team.hand.splice(selectedCardIndex, 1);
+    team.hand.push(cardPool[Math.floor(Math.random()*cardPool.length)]);
     endTurn();
 }
-function skipCard() { endTurn(); }
-function endTurn() {
-    currentTurnPlayer = (currentTurnPlayer + 1) % 6;
-    document.getElementById("roll-btn").disabled = false;
-    document.getElementById("card-btn").disabled = true;
-    document.getElementById("skip-card-btn").disabled = true;
-    document.getElementById("dice-result").innerText = "";
-    renderHand(); updateUI();
+
+function handleJudge(win) {
+    const p = pendingJudgePlayer; document.getElementById("judge-box").style.display = "none";
+    if (win) { teams[p.team].score += 2; showMsg("贏家得 2 分"); }
+    else { teams[p.team].score += 1; showMsg("輸家得 1 分"); }
+    pendingJudgePlayer = null; endMovePhase();
 }
 
-initBoard();
+function skipCard() { endTurn(); }
+function endTurn() {
+    currentTurnPlayer = (currentTurnPlayer + 1) % players.length; selectedCardIndex = null;
+    document.getElementById("roll-btn").disabled = false; document.getElementById("card-btn").disabled = true;
+    document.getElementById("skip-card-btn").disabled = true; document.getElementById("dice-result").innerText = "";
+    updateUI();
+}
+
+function checkAllGarbageCleared() {
+    // 計算地圖上還剩下的垃圾數量
+    const remainingGarbage = mapConfig.filter(cell => cell.type === "ocean" && cell.garbage !== null).length;
+    
+    // 如果垃圾數量為 0，則觸發遊戲結束
+    if (remainingGarbage === 0) {
+        gameEnded = true;
+        handleSeaCleanedGameOver();
+    }
+}
+
+// 初始化
+initMapData();
+teams.forEach(t => { for(let i=0; i<4; i++) t.hand.push(cardPool[Math.floor(Math.random()*cardPool.length)]); });
+renderBoard();
 </script>
 </body>
 </html>
