@@ -65,35 +65,25 @@
 
         .btn-menu {
             background: linear-gradient(135deg, #3182ce, #2b6cb0);
-            color: white;
-            border: none;
-            padding: 18px 16px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
+            color: white; border: none; padding: 18px 16px;
+            border-radius: 16px; font-size: 16px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
             transition: transform 0.05s ease;
         }
-
         .btn-menu:active { transform: scale(0.96); }
 
         .btn-menu.master {
             background: linear-gradient(135deg, #38a169, #2f855a);
             box-shadow: 0 4px 12px rgba(56, 161, 105, 0.25);
         }
-
-        /* 【新增】填空模式按鈕樣式 (橘金色) */
         .btn-menu.fill {
             background: linear-gradient(135deg, #d69e2e, #b7791f);
             box-shadow: 0 4px 12px rgba(214, 158, 46, 0.25);
         }
-
         .btn-menu.hell {
             background: linear-gradient(135deg, #e53e3e, #9b2c2c);
             box-shadow: 0 4px 12px rgba(229, 62, 62, 0.25);
         }
-
         .btn-menu.cheat {
             background: linear-gradient(135deg, #4a5568, #2d3748);
             box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
@@ -101,25 +91,13 @@
 
         /* 遊戲計分板 */
         .score-board {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ebf8ff;
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: bold;
-            color: #2b6cb0;
-            margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #ebf8ff; padding: 14px 18px; border-radius: 14px;
+            font-size: 15px; font-weight: bold; color: #2b6cb0; margin-bottom: 12px;
         }
 
-        .timer-container {
-            width: 100%; height: 6px; background-color: #edf2f7;
-            border-radius: 3px; margin-bottom: 20px; overflow: hidden; display: none; 
-        }
-        .timer-bar {
-            height: 100%; width: 100%; background-color: #ecc94b; transition: width 1s linear;
-        }
+        .timer-container { width: 100%; height: 6px; background-color: #edf2f7; border-radius: 3px; margin-bottom: 20px; overflow: hidden; display: none; }
+        .timer-bar { height: 100%; width: 100%; background-color: #ecc94b; transition: width 1s linear; }
         .timer-bar.danger { background-color: #e53e3e; }
 
         /* 題目卡片 */
@@ -136,7 +114,7 @@
             background: rgba(255,255,255,0.18); padding: 3px 10px; border-radius: 20px;
         }
 
-        /* 選項按鈕區 */
+        /* 選項按鈕區 (選擇題用) */
         .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
         .btn-opt {
             background-color: #ffffff; border: 2px solid #e2e8f0; padding: 18px 14px;
@@ -148,28 +126,38 @@
         .btn-opt.correct { background-color: #c6f6d5 !important; border-color: #38a169 !important; color: #1c452f; animation: pop 0.25s ease; }
         .btn-opt.wrong { background-color: #fed7d7 !important; border-color: #e53e3e !important; color: #652b2b; animation: shake 0.25s ease; }
 
-        /* 【新增】填空區樣式 */
+        /* 【全新】數字挖空區塊樣式 */
         #fill-container { width: 100%; margin-bottom: 16px; text-align: center; }
-        .fill-input {
-            width: 100%; padding: 18px 16px; border: 2px solid #cbd5e0;
-            border-radius: 16px; font-size: 16px; margin-bottom: 12px;
-            -webkit-user-select: auto; user-select: auto; /* 允許輸入框選取與打字 */
-            outline: none; transition: border-color 0.2s;
-            color: #2d3748; font-weight: bold; text-align: center;
+        #fill-formula {
+            font-size: 17px; font-weight: bold; color: #4a5568;
+            line-height: 2.2; margin-bottom: 20px; text-align: center;
+            background: #edf2f7; padding: 15px 10px; border-radius: 12px;
         }
-        .fill-input:focus { border-color: #3182ce; }
+        
+        .fill-num-input {
+            width: 55px; padding: 6px 2px; margin: 0 4px;
+            border: 2px solid #cbd5e0; border-radius: 8px;
+            font-size: 16px; font-weight: bold; text-align: center;
+            color: #2b6cb0; outline: none; background: white;
+            -webkit-user-select: auto; user-select: auto;
+            transition: all 0.2s;
+        }
+        .fill-num-input:focus { border-color: #3182ce; box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
+        .fill-num-input.correct { border-color: #38a169; background-color: #c6f6d5; color: #1c452f; }
+        .fill-num-input.wrong { border-color: #e53e3e; background-color: #fed7d7; color: #652b2b; }
+
         .fill-submit {
             width: 100%; padding: 16px; background-color: #4a5568; color: white;
             border: none; border-radius: 14px; font-size: 16px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
+            cursor: pointer; box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25); margin-bottom: 10px;
         }
         .fill-submit:active { transform: scale(0.98); }
-        .fill-feedback { margin-top: 12px; font-size: 16px; font-weight: bold; line-height: 1.5; }
+        .fill-feedback { margin-top: 10px; font-size: 16px; font-weight: bold; line-height: 1.5; }
 
         .next-btn {
             background-color: #3182ce; color: white; border: none; width: 100%;
             padding: 16px; font-size: 16px; border-radius: 14px; cursor: pointer;
-            font-weight: bold; display: none; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25); margin-top: 10px;
+            font-weight: bold; display: none; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
         }
 
         /* 行動小抄區 */
@@ -194,7 +182,7 @@
     <div class="menu-grid">
         <button class="btn-menu" onclick="initGame('normal')">⏱️ 每日快速抽考 (10題)</button>
         <button class="btn-menu master" onclick="initGame('master')">🏆 完整精熟測驗 (全29題 / 無計時)</button>
-        <button class="btn-menu fill" onclick="initGame('fill')">✍️ 終極填空大魔王 (全29題 / 無選項)</button>
+        <button class="btn-menu fill" onclick="initGame('fill')">✍️ 終極填空大魔王 (挖空配方數字)</button>
         <button class="btn-menu hell" onclick="initGame('hell')">🔥 新人魔鬼總考 (全29題 + 限時)</button>
         <button class="btn-menu cheat" onclick="openCheatSheet()">📖 行動配料小抄 </button>
     </div>
@@ -216,11 +204,13 @@
         <div class="hint" id="question-hint"></div>
     </div>
     
+    <!-- 選擇題區塊 -->
     <div class="options" id="options-container"></div>
 
+    <!-- 挖空數字區塊 -->
     <div id="fill-container">
-        <input type="text" id="fill-input" class="fill-input" placeholder="請依照小抄格式輸入配方..." autocomplete="off">
-        <button id="fill-submit" class="fill-submit" onclick="checkFillAnswer()">送出答案</button>
+        <div id="fill-formula"></div>
+        <button id="fill-submit" class="fill-submit" onclick="checkFillAnswer()">確定送出</button>
         <div id="fill-feedback" class="fill-feedback" style="display:none;"></div>
     </div>
 
@@ -241,6 +231,7 @@
 </div>
 
 <script>
+// 修正了「兩匙」及「檸檬之」的錯字，以利系統自動挖空數字
 const dataset = [
     { name: "紅茶拿鐵M (沒料)", hint: "40/30/20/10/5", ans: "100奶 100紅 100斯 或 120奶 140紅 140斯" },
     { name: "紅茶拿鐵L (沒料)", hint: "60/45/30/20/10", ans: "120奶 140紅 140斯 或 160奶 170紅 170斯" },
@@ -260,10 +251,10 @@ const dataset = [
     { name: "蘋果烏龍", hint: "60/45/30/20/10", ans: "250茶 150果汁" },
     { name: "檸檬烏龍", hint: "80/60/40/20/10", ans: "400烏 40檸檬汁" },
     { name: "百香綠", hint: "80/60/40/20/10", ans: "350綠 100百香果 或 300綠 80百香果" },
-    { name: "復刻檸檬", hint: "固定甜度", ans: "20檸檬之 30話梅醬" },
+    { name: "復刻檸檬", hint: "固定甜度", ans: "20檸檬汁 30話梅醬" },
     { name: "冬露檸檬", hint: "固定甜度", ans: "400冬 40檸檬" },
     { name: "百香蒟蒻", hint: "固定甜度 50", ans: "120百香 剩下補水" },
-    { name: "桑葚冰茶", hint: "20/15/10/5/3", ans: "兩匙醬 20檸檬汁 300紅" },
+    { name: "桑葚冰茶", hint: "20/15/10/5/3", ans: "2匙醬 20檸檬汁 300紅" },
     { name: "紅茶桑葚凍飲", hint: "40/30/20/10/5", ans: "350紅" },
     { name: "抹烏", hint: "M 40/30/20/10/5 L 60/45/30/20/10", ans: "M 100抹 150奶 150烏 / L 150抹 220奶 220烏" },
     { name: "奶蓋系列", hint: "M 30/20/10/5/3 L 40/30/20/10/5", ans: "M 250茶 / L 350茶" },
@@ -287,19 +278,11 @@ function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
 
-// 【新增】將全形數字/英文字母轉換為半形，增加寬容度
-function toHalfWidth(str) {
-    return str.replace(/[\uff01-\uff5e]/g, function(ch) {
-        return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
-    });
-}
-
 function initGame(mode) {
     gameMode = mode;
     score = 0;
     currentQuestionIndex = 0;
     
-    // UI 重置
     document.getElementById('timer-container').style.display = 'none';
     document.getElementById('timer-text').style.display = 'none';
     document.getElementById('options-container').style.display = 'flex';
@@ -314,9 +297,8 @@ function initGame(mode) {
         document.getElementById('game-subtitle').innerText = "請選出正確的材料配比";
         selectedQuestions = shuffle([...dataset]);
     } else if (mode === 'fill') {
-        // 進入填空模式
         document.getElementById('game-title').innerText = "✍️ 終極填空大魔王";
-        document.getElementById('game-subtitle').innerText = "憑記憶手動輸入精準配方！";
+        document.getElementById('game-subtitle').innerText = "請將正確的數字填入空格中！";
         document.getElementById('options-container').style.display = 'none';
         document.getElementById('fill-container').style.display = 'block';
         selectedQuestions = shuffle([...dataset]);
@@ -345,14 +327,21 @@ function showQuestion() {
     document.getElementById('question-hint').innerText = currentQ.hint ? `糖冰參考: ${currentQ.hint}` : "正常規格";
 
     if (gameMode === 'fill') {
-        // 填空模式 UI 初始化
-        const fillInput = document.getElementById('fill-input');
-        fillInput.value = '';
-        fillInput.style.borderColor = '#cbd5e0';
+        // 利用正則表達式，找出所有數字並替換成輸入框
+        let formulaHtml = currentQ.ans.replace(/\d+/g, (match) => {
+            // type="tel" 確保手機上能直接叫出大面積的數字鍵盤
+            return `<input type="tel" pattern="[0-9]*" class="fill-num-input" data-ans="${match}">`;
+        });
+        
+        document.getElementById('fill-formula').innerHTML = formulaHtml;
         document.getElementById('fill-submit').style.display = 'block';
         document.getElementById('fill-feedback').style.display = 'none';
+        
+        // 自動對焦第一個輸入框 (部分手機瀏覽器支援)
+        const firstInput = document.querySelector('.fill-num-input');
+        if(firstInput) firstInput.focus();
+
     } else {
-        // 選擇題模式 UI 初始化
         let options = [currentQ.ans];
         let wrongPool = dataset.filter(item => item.ans !== currentQ.ans).map(item => item.ans);
         shuffle(wrongPool);
@@ -379,35 +368,39 @@ function showQuestion() {
     }
 }
 
-// 【新增】填空題的驗證邏輯
 function checkFillAnswer() {
     if (hasAnswered) return;
-    
-    let inputEle = document.getElementById('fill-input');
-    let userInput = inputEle.value.trim();
-    if (!userInput) return; // 空白防呆
-    
     hasAnswered = true;
-    let currentQ = selectedQuestions[currentQuestionIndex];
-    let correctAns = currentQ.ans;
     
-    // 文字寬容處理：轉半形、去除所有空白、轉小寫比對
-    let cleanInput = toHalfWidth(userInput).replace(/\s+/g, '').toLowerCase();
-    let cleanCorrect = toHalfWidth(correctAns).replace(/\s+/g, '').toLowerCase();
+    let inputs = document.querySelectorAll('.fill-num-input');
+    let allCorrect = true;
+    
+    inputs.forEach(input => {
+        let userVal = input.value.trim();
+        let correctVal = input.dataset.ans;
+        
+        input.disabled = true; // 鎖定輸入框
+        
+        if (userVal === correctVal) {
+            input.classList.add('correct');
+        } else {
+            input.classList.add('wrong');
+            input.value = correctVal; // 強制顯示正確答案
+            allCorrect = false;
+        }
+    });
     
     let feedbackEle = document.getElementById('fill-feedback');
     feedbackEle.style.display = 'block';
 
-    if (cleanInput === cleanCorrect) {
+    if (allCorrect) {
         score++;
         document.getElementById('score').innerText = score;
-        inputEle.style.borderColor = '#38a169';
-        feedbackEle.innerHTML = `✅ 答對了！`;
+        feedbackEle.innerHTML = `比例完全正確！`;
         feedbackEle.style.color = '#38a169';
         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(40);
     } else {
-        inputEle.style.borderColor = '#e53e3e';
-        feedbackEle.innerHTML = `❌ 答錯了！<br><span style="font-size:13px; color:#718096; font-weight:normal;">你的輸入：${userInput}</span><br>正確解答：<span style="color:#e53e3e">${correctAns}</span>`;
+        feedbackEle.innerHTML = `記錯囉！紅色格子為正確數字`;
         feedbackEle.style.color = '#e53e3e';
         if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([80, 40, 80]);
     }
@@ -514,15 +507,15 @@ function endGame() {
     let evalText = `你在 ${selectedQuestions.length} 題中答對了 ${score} 題。<br><br>`;
     
     if (gameMode === 'fill') {
-        if (finalPercentage === 100) evalText += "🤯 神乎其技！竟然能在無選項提示下全對，你根本是會走路的配方表！";
-        else if (finalPercentage >= 80) evalText += "🔥 實力堅強！手寫輸入還能拿高分，代表你已經把配方深深印在腦海裡了！";
-        else if (finalPercentage >= 60) evalText += "👌 有點難對吧？只要把常搞混的幾個特例背起來，下次一定能過關！";
-        else evalText += "💪 填空題本來就是大魔王！建議先回到「選擇題」模式多練習幾次再來挑戰！";
+        if (finalPercentage === 100) evalText += "🤯 神乎其技！竟然全對，你根本是行走的配方表！";
+        else if (finalPercentage >= 80) evalText += "🔥 實力堅強！自己填數字還能拿高分！";
+        else if (finalPercentage >= 60) evalText += "👌 有點難對吧？有些品項容易搞混，再多練幾次一定能過關！";
+        else evalText += "💪 挖空題是大魔王！建議先回到「選擇題」模式多看幾次小抄再來挑戰！";
     } else {
         if (finalPercentage === 100) evalText += gameMode === 'hell' ? "👑 太神了！在限時魔鬼考中完美通關！這速度與精準度直接升任吧台王！" : "👑 滿分！全 29 題完全難不倒你！可以準備挑戰限時或填空魔鬼考囉！";
         else if (finalPercentage >= 80) evalText += "👍 表現很棒！大部份的調飲配比都滾瓜爛熟了，實戰時一定可以忙而不亂！";
         else if (finalPercentage >= 60) evalText += "👌 雖然及格了，但某些不常用的配料還是容易搞混。建議再多看幾次小抄補強一下！";
-        else evalText += "💪 出錯餐會被客訴與浪費食材喔！別灰心，多看幾次小抄熟悉位置再來重測！";
+        else evalText += "💪 出錯餐會被客訴與浪費食材喔！多看幾次小抄熟悉再來重測！";
     }
     
     document.getElementById('evaluation-text').innerHTML = evalText;
@@ -540,7 +533,7 @@ function openCheatSheet() {
         const div = document.createElement('div');
         div.className = 'cheat-item';
         div.innerHTML = `
-            <div class="cheat-title">${item.name}</div>
+            <div class="cheat-title"> ${item.name}</div>
             <div class="cheat-detail">配方：<strong>${item.ans}</strong></div>
             <div class="cheat-hint">${item.hint ? '📌 糖冰：' + item.hint : ''}</div>
         `;
