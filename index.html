@@ -578,7 +578,7 @@ function openCheatSheet() {
         const div = document.createElement('div');
         div.className = 'cheat-item';
         div.innerHTML = `
-            <div class="cheat-title">🍹 ${item.name}</div>
+            <div class="cheat-title">${item.name}</div>
             <div class="cheat-detail">✅ 配方：<strong>${item.ans}</strong></div>
             <div class="cheat-hint">${item.hint ? '📌 糖冰：' + item.hint : ''}</div>
         `;
