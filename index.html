@@ -85,6 +85,12 @@
             transform: scale(0.96);
         }
 
+        /* 【新增】精熟測驗綠色漸層按鈕 */
+        .btn-menu.master {
+            background: linear-gradient(135deg, #38a169, #2f855a);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.25);
+        }
+
         .btn-menu.cheat {
             background: linear-gradient(135deg, #4a5568, #2d3748);
             box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
@@ -109,7 +115,7 @@
             margin-bottom: 12px;
         }
 
-        /* 【新增】計時器進度條外框 */
+        /* 計時器進度條外框 */
         .timer-container {
             width: 100%;
             height: 6px;
@@ -117,10 +123,10 @@
             border-radius: 3px;
             margin-bottom: 20px;
             overflow: hidden;
-            display: none; /* 預設隱藏，魔鬼總考才開啟 */
+            display: none; /* 預設隱藏，只有魔鬼總考開啟 */
         }
 
-        /* 【新增】計時器進度條動畫本體 */
+        /* 計時器進度條動畫本體 */
         .timer-bar {
             height: 100%;
             width: 100%;
@@ -128,7 +134,7 @@
             transition: width 1s linear;
         }
 
-        /* 【新增】時間倒數告急時的紅色樣式 */
+        /* 時間倒數告急時的紅色樣式 */
         .timer-bar.danger {
             background-color: #e53e3e;
         }
@@ -305,7 +311,8 @@
     <h1>mome配料記憶</h1>
     <div class="menu-grid">
         <button class="btn-menu" onclick="initGame('normal')">⏱️ 每日快速抽考 (10題)</button>
-        <button class="btn-menu hell" onclick="initGame('hell')">🔥 新人魔鬼總考 (全29題+限時)</button>
+        <button class="btn-menu master" onclick="initGame('master')">🏆 完整精熟測驗 (全29題 / 無計時)</button>
+        <button class="btn-menu hell" onclick="initGame('hell')">🔥 新人魔鬼總考 (全29題 + 限時)</button>
         <button class="btn-menu cheat" onclick="openCheatSheet()">📖 行動配料小抄 </button>
     </div>
 </div>
@@ -382,10 +389,10 @@ let selectedQuestions = [];
 let hasAnswered = false;
 let gameMode = 'normal';
 
-// 【新增】計時器相關變數
-let timeLeft = 5;
+// 計時器相關變數
+let timeLeft = 8;
 let timerId = null;
-const SECONDS_PER_QUESTION = 5; //設定每題時間為 5 秒
+const SECONDS_PER_QUESTION = 8; //設定每題時間為 8 秒
 
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
@@ -398,13 +405,17 @@ function initGame(mode) {
     
     if (mode === 'normal') {
         document.getElementById('game-title').innerText = "⏱️ 每日快速抽考";
-        // 快速抽考模式隱藏計時器
         document.getElementById('timer-container').style.display = 'none';
         document.getElementById('timer-text').style.display = 'none';
         selectedQuestions = shuffle([...dataset]).slice(0, 10);
+    } else if (mode === 'master') {
+        // 【新增】29題精熟測驗：顯示題數29題，但隱藏計時進度條與倒數文字
+        document.getElementById('game-title').innerText = "🏆 完整精熟測驗";
+        document.getElementById('timer-container').style.display = 'none';
+        document.getElementById('timer-text').style.display = 'none';
+        selectedQuestions = shuffle([...dataset]);
     } else {
         document.getElementById('game-title').innerText = "🔥 新人魔鬼總考";
-        // 魔鬼總考模式開啟計時器 UI
         document.getElementById('timer-container').style.display = 'block';
         document.getElementById('timer-text').style.display = 'block';
         selectedQuestions = shuffle([...dataset]);
@@ -446,13 +457,13 @@ function showQuestion() {
         optionsContainer.appendChild(button);
     });
 
-    // 【新增】如果是魔鬼總考模式，每題重啟計時器
+    // 如果是魔鬼總考模式，每題重啟計時器
     if (gameMode === 'hell') {
         startTimer();
     }
 }
 
-// 【新增】啟動計時器邏輯
+// 啟動計時器邏輯
 function startTimer() {
     clearInterval(timerId); // 清除上一次的計時
     timeLeft = SECONDS_PER_QUESTION;
@@ -469,7 +480,7 @@ function startTimer() {
     }, 1000);
 }
 
-// 【新增】每秒更新計時器視覺與顏色變更
+// 每秒更新計時器視覺與顏色變更
 function updateTimerUI() {
     document.getElementById('timer-text').innerText = `倒數: ${timeLeft}s`;
     const bar = document.getElementById('timer-bar');
@@ -486,7 +497,7 @@ function updateTimerUI() {
     }
 }
 
-// 【新增】時間到未答題的自動判定邏輯
+// 時間到未答題的自動判定邏輯
 function handleTimeout() {
     if (hasAnswered) return;
     hasAnswered = true;
@@ -509,7 +520,7 @@ function checkAnswer(button, selected, correct) {
     if (hasAnswered) return;
     hasAnswered = true;
 
-    // 【新增】只要員工點選答案，立刻凍結倒數，方便有時間看正確配方
+    // 只要員工點選答案，立刻凍結倒數，方便有時間看正確配方
     clearInterval(timerId);
 
     const buttons = document.querySelectorAll('.btn-opt');
@@ -543,7 +554,7 @@ function nextQuestion() {
 }
 
 function endGame() {
-    clearInterval(timerId); // 【新增】保險起見清除計時
+    clearInterval(timerId); // 保險起見清除計時
     document.getElementById('game-view').style.display = 'none';
     document.getElementById('summary-view').style.display = 'block';
     
@@ -552,15 +563,15 @@ function endGame() {
     
     let evalText = `你在 ${selectedQuestions.length} 題中答對了 ${score} 題。<br><br>`;
     
-    // 【修改】針對限時模式優化結算評語
+    // 針對不同模式與分數優化結算評語
     if (finalPercentage === 100) {
-        evalText += "👑 太神了！在限時魔鬼考中完美全對通關！這速度與精準度直接升任吧台王！";
+        evalText += gameMode === 'hell' ? "👑 太神了！在限時魔鬼考中完美全對通關！這速度與精準度直接升任吧台王！" : "👑 滿分！全 29 題完全難不倒你！配料細節記得非常清楚，可以準備去挑戰限時魔鬼考囉！";
     } else if (finalPercentage >= 80) {
-        evalText += "👍 頂住時間壓力了！表現很棒，實戰時一定可以忙而不亂！";
+        evalText += "👍 表現很棒！大部份的調飲配比都滾瓜爛熟了，實戰時一定可以忙而不亂！";
     } else if (finalPercentage >= 60) {
-        evalText += "👌 雖然及格，但點選稍有猶豫，容易因為時間到被扣分。建議再多練習提升手速！";
+        evalText += "👌 雖然及格了，但某些不常用的配料還是容易搞混。建議再多看幾次小抄補強一下！";
     } else {
-        evalText += "💪 面對計時慌張了吧？別擔心，多看幾次小抄熟悉配方，手速自然會變快！";
+        evalText += "💪 出錯餐會被客訴與浪費食材喔！別灰心，多看幾次小抄熟悉位置，再來重測一次！";
     }
     
     document.getElementById('evaluation-text').innerHTML = evalText;
@@ -578,8 +589,8 @@ function openCheatSheet() {
         const div = document.createElement('div');
         div.className = 'cheat-item';
         div.innerHTML = `
-            <div class="cheat-title">${item.name}</div>
-            <div class="cheat-detail"> 配方：<strong>${item.ans}</strong></div>
+            <div class="cheat-title"> ${item.name}</div>
+            <div class="cheat-detail">配方：<strong>${item.ans}</strong></div>
             <div class="cheat-hint">${item.hint ? '📌 糖冰：' + item.hint : ''}</div>
         `;
         listContainer.appendChild(div);
@@ -587,7 +598,7 @@ function openCheatSheet() {
 }
 
 function backToMenu() {
-    clearInterval(timerId); // 【新增】回主選單清空計時器
+    clearInterval(timerId); // 回主選單清空計時器
     document.getElementById('game-view').style.display = 'none';
     document.getElementById('cheat-view').style.display = 'none';
     document.getElementById('summary-view').style.display = 'none';
