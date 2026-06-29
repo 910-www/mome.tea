@@ -1,262 +1,600 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Undersea Big Rich Man</title>
-<style>
-:root {
-    --bg-color: #f4f1ea; --text-main: #333333; --text-sub: #7f7f7f;
-    --border-color: #d1d1d1; --accent-red: #a63d40; --accent-blue: #607d8b;
-    --accent-green: #849483; --muji-tan: #e8e2d6;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
-body { font-family: "PingFang TC", sans-serif; background-color: var(--bg-color); color: var(--text-main); padding: 4px; display: flex; flex-direction: column; align-items: center; }
-#game-container { width: 98vw; max-width: 500px; position: relative; }
-.board { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); gap: 1.5px; background: var(--border-color); border: 2px solid var(--border-color); width: 100%; aspect-ratio: 1 / 1; position: relative; }
-.cell { background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 7px; position: relative; }
-.cell.start-team0 { background: #fee2e2; }
-.cell.start-team1 { background: #e0f2fe; }
-.cell.start-team2 { background: #f0fdf4; }
-.cell.station { background: var(--muji-tan); }
-.cell.event-cell { background: #f5f3ff; }
-.cell-name { font-size: 11px; font-weight: 700; position: absolute; top: 1px; left: 1px; color: var(--text-sub); transform: scale(0.8); transform-origin: top left; }
-.cell-info { font-size: 14px; line-height: 1; }
-.player-container { display: flex; gap: 1px; position: absolute; bottom: 1px; right: 1px; flex-wrap: wrap; justify-content: flex-end; max-width: 90%; }
-.player-token { width: 11px; height: 11px; border-radius: 50%; color: #fff; font-size: 7px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 0.5px solid rgba(255,255,255,0.8); }
-.t0-token { background: var(--accent-red); }
-.t1-token { background: var(--accent-blue); }
-.t2-token { background: var(--accent-green); }
-.center-info { grid-column: 2 / 10; grid-row: 2 / 10; background: rgba(255, 255, 255, 0.95); z-index: 5; display: flex; flex-direction: column; padding: 5%; justify-content: space-evenly; text-align: center; }
-.center-turn { font-size: 14px; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-.center-scores { display: flex; justify-content: space-around; width: 100%; }
-.score-val { font-size: 18px; font-weight: 800; }
-.score-label { font-size: 9px; opacity: 0.7; }
-.center-hp { font-size: 10px; color: #555; background: #fafaf8; padding: 4px; border-radius: 3px; border: 1px solid #f0f0f0; }
-.controls { width: 100%; margin-top: 10px; }
-.action-row { display: flex; gap: 6px; margin-bottom: 8px; }
-button { flex: 1; padding: 12px 2px; font-size: 13px; cursor: pointer; background: #333; color: #fff; border: none; border-radius: 4px; }
-button:disabled { background: #ddd; color: #999; }
-.hand-container { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; }
-.card-option { min-width: 90px; border: 1px solid #ddd; border-radius: 4px; padding: 8px; background: #fff; text-align: left; cursor: pointer; }
-.card-option.selected { border: 2px solid #333; background: #f0f0f0; }
-.card-option b { font-size: 11px; display: block; }
-.card-option span { font-size: 9px; color: #666; }
-#dice-result { height: 20px; font-weight: bold; color: var(--accent-red); font-size: 14px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>mome配料記憶</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro TC", "SF Pro Display", "PingFang TC", "Helvetica Neue", "Microsoft JhengHei", sans-serif;
+            /* 移除 iOS / Android 點擊按鈕時出現的預設灰底與延遲 */
+            -webkit-tap-highlight-color: transparent;
+            /* 徹底禁止手機上因連續快點導致文字被選取/反藍 */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        /* 修正手機版網頁在某些瀏覽器下拉會觸發重新整理(橡皮筋效果)的問題 */
+        html, body {
+            background-color: #f7fafc;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: #ffffff;
+            padding: 24px 16px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-top: 5px;
+            /* 避免元件超出螢幕 */
+            word-wrap: break-word;
+        }
+
+        h1 {
+            color: #2b6cb0;
+            font-size: 22px;
+            margin: 0 0 6px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* 主選單按鈕 */
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .btn-menu {
+            background: linear-gradient(135deg, #3182ce, #2b6cb0);
+            color: white;
+            border: none;
+            padding: 18px 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
+            /* 手機點擊動態縮放回饋 */
+            transition: transform 0.05s ease;
+        }
+
+        .btn-menu:active {
+            transform: scale(0.96);
+        }
+
+        .btn-menu.cheat {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
+        }
+
+        .btn-menu.hell {
+            background: linear-gradient(135deg, #e53e3e, #9b2c2c);
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.25);
+        }
+
+        /* 遊戲計分板 */
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ebf8ff;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #2b6cb0;
+            margin-bottom: 12px;
+        }
+
+        /* 【新增】計時器進度條外框 */
+        .timer-container {
+            width: 100%;
+            height: 6px;
+            background-color: #edf2f7;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: none; /* 預設隱藏，魔鬼總考才開啟 */
+        }
+
+        /* 【新增】計時器進度條動畫本體 */
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background-color: #ecc94b;
+            transition: width 1s linear;
+        }
+
+        /* 【新增】時間倒數告急時的紅色樣式 */
+        .timer-bar.danger {
+            background-color: #e53e3e;
+        }
+
+        /* 題目卡片 */
+        .card {
+            background: linear-gradient(135deg, #553c9a, #3b4d9b);
+            color: white;
+            padding: 32px 14px;
+            border-radius: 18px;
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 22px;
+            box-shadow: 0 6px 16px rgba(85, 60, 154, 0.2);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card .hint {
+            font-size: 12px;
+            color: #e9d8fd;
+            margin-top: 10px;
+            font-weight: normal;
+            background: rgba(255,255,255,0.18);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        /* 選項按鈕區 */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .btn-opt {
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            padding: 18px 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #4a5568;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+            transition: background-color 0.1s ease, transform 0.05s ease;
+            width: 100%;
+            word-break: break-all;
+        }
+
+        .btn-opt:active {
+            background-color: #edf2f7;
+            transform: scale(0.98);
+        }
+
+        /* 答對與答錯樣式（加入手機動態特效） */
+        .btn-opt.correct {
+            background-color: #c6f6d5 !important;
+            border-color: #38a169 !important;
+            color: #1c452f;
+            animation: pop 0.25s ease;
+        }
+
+        .btn-opt.wrong {
+            background-color: #fed7d7 !important;
+            border-color: #e53e3e !important;
+            color: #652b2b;
+            animation: shake 0.25s ease;
+        }
+
+        .next-btn {
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
+            margin-top: 10px;
+        }
+
+        /* 行動小抄區 - 優化手機端滑動與視窗高度 */
+        .cheat-sheet {
+            text-align: left;
+            max-height: 55vh;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding-right: 4px;
+            /* 讓 iOS 滑動更順暢 */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cheat-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 0;
+        }
+
+        .cheat-title {
+            font-weight: bold;
+            color: #2b6cb0;
+            font-size: 15px;
+        }
+
+        .cheat-detail {
+            font-size: 14px;
+            color: #4a5568;
+            margin-top: 4px;
+        }
+
+        .cheat-hint {
+            font-size: 11px;
+            color: #a0aec0;
+            margin-top: 2px;
+        }
+
+        .back-btn {
+            background-color: #718096;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* 結束區 */
+        .summary, #game-view, #cheat-view {
+            display: none;
+        }
+
+        .restart-btn {
+            background-color: #38a169;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.25);
+        }
+
+        /* 動畫效果 */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
 </head>
 <body>
-<div id="game-container">
-    <div class="board" id="board">
-        <div class="center-info">
-            <div id="current-turn" class="center-turn">P1</div>
-            <div class="center-scores">
-                <div class="score-item" style="color:var(--accent-red)"><span id="t0-score" class="score-val">0</span><br><span class="score-label">RED</span></div>
-                <div class="score-item" style="color:var(--accent-blue)"><span id="t1-score" class="score-val">0</span><br><span class="score-label">BLUE</span></div>
-                <div class="score-item" style="color:var(--accent-green)"><span id="t2-score" class="score-val">0</span><br><span class="score-label">GREEN</span></div>
-            </div>
-            <div id="p-hp-info" class="center-hp">HP STATUS</div>
-            <h1 style="font-size:12px;">Undersea Big Rich Man</h1>
-            <div id="dice-result"></div>
-        </div>
-    </div>
-    <div id="judge-box" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:3px solid #333; z-index:2000; text-align:center; border-radius:15px; box-shadow:0 0 20px rgba(0,0,0,0.5);">
-        <h3 id="judge-title">判定</h3>
-        <p id="judge-desc" style="margin:10px 0; font-size:14px;">請誠實回報結果：</p>
-        <div style="display:flex; gap:10px; justify-content:center;">
-            <button onclick="handleJudge(true)" style="background:#4CAF50;">我贏了</button>
-            <button onclick="handleJudge(false)" style="background:#f44336;">我輸了</button>
-        </div>
-    </div>
-    <div class="controls">
-        <div class="action-row">
-            <button id="roll-btn" onclick="rollDice()">🎲 擲骰移動</button>
-            <button id="card-btn" onclick="playCard()" disabled>🧬 發動卡片</button>
-            <button id="skip-card-btn" onclick="skipCard()" disabled>結束</button>
-        </div>
-        <div class="hand-container" id="hand-cards"></div>
+
+<div class="container" id="menu-view">
+    <h1>mome配料記憶</h1>
+    <div class="menu-grid">
+        <button class="btn-menu" onclick="initGame('normal')">⏱️ 每日快速抽考 (10題)</button>
+        <button class="btn-menu hell" onclick="initGame('hell')">🔥 新人魔鬼總考 (全29題+限時)</button>
+        <button class="btn-menu cheat" onclick="openCheatSheet()">📖 行動配料小抄 </button>
     </div>
 </div>
 
+<div class="container" id="game-view">
+    <h1 id="game-title">每日快速抽考</h1>
+    <div class="subtitle">請選出正確的材料配比</div>
+    <div class="score-board">
+        <div>題號: <span id="current-q">1</span> / <span id="total-q">10</span></div>
+        <div id="timer-text" style="color: #dd6b20; display: none;">倒數: 15s</div>
+        <div>分數: <span id="score">0</span></div>
+    </div>
+    <div class="timer-container" id="timer-container">
+        <div class="timer-bar" id="timer-bar"></div>
+    </div>
+    <div class="card">
+        <div id="question-text">載入中...</div>
+        <div class="hint" id="question-hint"></div>
+    </div>
+    <div class="options" id="options-container"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題 👉</button>
+</div>
+
+<div class="container" id="cheat-view">
+    <h1>行動配料小抄</h1>
+    <div class="cheat-sheet" id="cheat-sheet-list"></div>
+    <button class="back-btn" onclick="backToMenu()">返回主選單 ↩</button>
+</div>
+
+<div class="container summary" id="summary-view">
+    <h1>特訓結束！</h1>
+    <p style="font-size: 16px; margin: 15px 0;">最終正確率：<br><strong id="final-score" style="color: #38a169; font-size: 42px;">0</strong> 分</p>
+    <div id="evaluation-text" style="font-weight: bold; color: #4a5568; margin-bottom: 25px; font-size: 15px; padding: 0 10px; line-height: 1.5;"></div>
+    <button class="restart-btn" onclick="backToMenu()">回到主選單 🔄</button>
+</div>
+
 <script>
-const garbageTypes = [
-    { key: "tire", name: "輪胎", score: 5, icon: "🛞" }, { key: "net", name: "漁網", score: 4, icon: "🕸️" },
-    { key: "bag", name: "塑膠袋", score: 3, icon: "🛍️" }, { key: "bottle", name: "寶特瓶", score: 2, icon: "🍾" },
-    { key: "straw", name: "吸管", score: 1, icon: "🥤" }
+// 依據原始圖片建立的 29 筆最精準資料庫
+const dataset = [
+    { name: "紅茶拿鐵M (沒料)", hint: "40/30/20/10/5", ans: "100奶 100紅 100斯 或 120奶 140紅 140斯" },
+    { name: "紅茶拿鐵L (沒料)", hint: "60/45/30/20/10", ans: "120奶 140紅 140斯 或 160奶 170紅 170斯" },
+    { name: "紅茶拿鐵M (有料)", hint: "40/30/20/10/5", ans: "100奶 100紅 100斯" },
+    { name: "紅茶拿鐵L (有料)", hint: "60/45/30/20/10", ans: "120奶 140紅 140斯" },
+    { name: "煮濃厚拿鐵", hint: "40/30/20/10/5", ans: "120奶 280斯" },
+    { name: "山茶花/烏龍拿鐵M", hint: "40/30/20/10/5", ans: "150奶 200烏" },
+    { name: "山茶花/烏龍拿鐵L", hint: "60/45/30/20/10", ans: "200奶 250烏" },
+    { name: "輕冬露拿鐵M", hint: "固定甜度", ans: "120奶 300冬" },
+    { name: "輕冬露拿鐵L", hint: "固定甜度", ans: "150奶 350冬" },
+    { name: "梔子花奶綠", hint: "M 40/30/20/10/5 L 60/45/30/20/10", ans: "M: 120奶 280綠 / L: 150奶 350綠" },
+    { name: "純茶系列", hint: "40/30/20/10/5", ans: "M: 300茶/350茶，L: 400茶/450茶" },
+    { name: "冬露", hint: "固定甜度", ans: "M 400茶 / L 500茶" },
+    { name: "抹茶 (無料)", hint: "M 40/30/20/10/5 L 60/45/30/20/10", ans: "M 150抹 200奶 / L 200抹 300奶" },
+    { name: "抹茶 (有料)", hint: "M 40/30/20/10/5 L 60/45/30/20/10", ans: "M 100抹 150奶 / L 150抹 200奶" },
+    { name: "柳橙烏龍 / 柳橙綠茶", hint: "80/60/40/20/10", ans: "250茶 150果汁" },
+    { name: "蘋果烏龍", hint: "60/45/30/20/10", ans: "250茶 150果汁" },
+    { name: "檸檬烏龍", hint: "80/60/40/20/10", ans: "400烏 40檸檬汁" },
+    { name: "百香綠", hint: "80/60/40/20/10", ans: "350綠 100百香果 或 300綠 80百香果" },
+    { name: "復刻檸檬", hint: "固定甜度", ans: "20檸檬之 30話梅醬" },
+    { name: "冬露檸檬", hint: "固定甜度", ans: "400冬 40檸檬" },
+    { name: "百香蒟蒻", hint: "固定甜度 50", ans: "120百香 剩下補水" },
+    { name: "桑葚冰茶", hint: "20/15/10/5/3", ans: "兩匙醬 20檸檬汁 300紅" },
+    { name: "紅茶桑葚凍飲", hint: "40/30/20/10/5", ans: "350紅" },
+    { name: "抹烏", hint: "M 40/30/20/10/5 L 60/45/30/20/10", ans: "M 100抹 150奶 150烏 / L 150抹 220奶 220烏" },
+    { name: "奶蓋系列", hint: "M 30/20/10/5/3 L 40/30/20/10/5", ans: "M 250茶 / L 350茶" },
+    { name: "冰淇淋系列", hint: "甜度 30", ans: "350茶" },
+    { name: "十勝冰淇淋煮濃20", hint: "甜度 20", ans: "120奶 280斯" },
+    { name: "十勝霸王純乳種拿鐵", hint: "甜度 25", ans: "80奶 320霸王茶底" },
+    { name: "百香霜淇淋", hint: "甜度 30", ans: "110百香果 剩下補水" }
 ];
-const cardPool = [
-    { id: "shrimp", name: "🦐 爆炸蝦", desc: "前進 2 格，撿垃圾" }, { id: "shark", name: "🦈 冰凍鯊", desc: "前進 4 格，撿垃圾" },
-    { id: "starfish", name: "⭐ 生命之星", desc: "回復 1 HP" }, { id: "whale", name: "🐋 鯨心膽跳", desc: "全隊伍 HP 補滿" },
-    { id: "turtle", name: "🐢 龜甲萬", desc: "防禦效果" }, { id: "octopus", name: "🐙 章魚墨客", desc: "對手停一輪" },
-    { id: "shell", name: "🐚 貝感欣慰", desc: "傳送至最近垃圾" }
-];
-const eventPool = [
-    { id: "evt_whale", name: "擱淺鯨魚", desc: "猜拳，贏家2分/輸家1分" }, { id: "evt_straw", name: "海龜吸管", desc: "對手走1步，己得1分" },
-    { id: "evt_oil", name: "海底漏油", desc: "全扣1HP，限2步" }, { id: "evt_net", name: "漁網", desc: "隨機對手被困" },
-    { id: "evt_sonar", name: "聲納", desc: "下輪限步 1" }, { id: "evt_earthquake", name: "海牛翻身", desc: "位置重組" },
-    { id: "evt_turtles", name: "海龜", desc: "扣 3 分" }
-];
 
-let currentTurnPlayer = 0; let selectedCardIndex = null; let globalMaxSteps = 3; let globalSonarEffect = 0; let pendingJudgePlayer = null;
-const players = [
-    { id: 1, name: "P1", team: 0, hp: 5, position: 0, trap: false, bag: [] }, { id: 2, name: "P2", team: 0, hp: 5, position: 0, trap: false, bag: [] },
-    { id: 3, name: "P3", team: 1, hp: 5, position: 9, trap: false, bag: [] }, { id: 4, name: "P4", team: 1, hp: 5, position: 9, trap: false, bag: [] },
-    { id: 5, name: "P5", team: 2, hp: 5, position: 18, trap: false, bag: [] }, { id: 6, name: "P6", team: 2, hp: 5, position: 18, trap: false, bag: [] }
-];
-const teams = [{ score: 0, hand: [] }, { score: 0, hand: [] }, { score: 0, hand: [] }];
-const mapConfig = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let selectedQuestions = [];
+let hasAnswered = false;
+let gameMode = 'normal';
 
-function showMsg(m, cb) { if(m) alert(m); if(cb) cb(); }
+// 【新增】計時器相關變數
+let timeLeft = 5;
+let timerId = null;
+const SECONDS_PER_QUESTION = 5; //設定每題時間為 5 秒
 
-function initMapData() {
-    for (let i = 0; i < 36; i++) {
-        if (i === 0) mapConfig.push({ name: "紅", type: "start-team0" });
-        else if (i === 9) mapConfig.push({ name: "藍", type: "start-team1" });
-        else if (i === 18) mapConfig.push({ name: "綠", type: "start-team2" });
-        else if ([5, 14, 23, 32].includes(i)) mapConfig.push({ name: "回收", type: "station" });
-        else if ([3, 7, 12, 16, 21, 25, 30, 34].includes(i)) mapConfig.push({ name: "事件", type: "event-cell" });
-        else {
-            let rt = Math.random() > 0.4 ? garbageTypes[Math.floor(Math.random() * garbageTypes.length)] : null;
-            mapConfig.push({ name: i, type: "ocean", garbage: rt ? {...rt} : null });
-        }
-    }
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
 }
 
-function renderBoard() {
-    const board = document.getElementById("board");
-    const center = board.querySelector(".center-info");
-    board.innerHTML = ""; board.appendChild(center);
-    const getC = (i) => {
-        if (i <= 9) return { r: 1, c: i + 1 }; if (i <= 17) return { r: i - 8, c: 10 };
-        if (i <= 27) return { r: 10, c: 10 - (i - 18) }; return { r: 10 - (i - 27), c: 1 };
-    };
-    for(let i=0; i<36; i++) {
-        const d = mapConfig[i]; const {r, c} = getC(i);
-        const div = document.createElement("div"); div.className = `cell ${d.type}`; div.id = `cell-${i}`;
-        div.style.gridRow = r; div.style.gridColumn = c;
-        div.innerHTML = `<span class="cell-name">${d.name}</span><div class="cell-info">${d.garbage?d.garbage.icon:''}</div><div class="player-container"></div>`;
-        board.appendChild(div);
-    }
-    updateUI();
-}
-
-function updateUI() {
-    document.querySelectorAll('.player-container').forEach(el => el.innerHTML = '');
-    players.forEach(p => {
-        const container = document.querySelector(`#cell-${p.position} .player-container`);
-        if (container) {
-            const t = document.createElement("div"); t.className = `player-token t${p.team}-token`; t.innerText = p.name;
-            container.appendChild(t);
-        }
-    });
-    for (let i = 0; i < 3; i++) document.getElementById(`t${i}-score`).innerText = teams[i].score;
-    document.getElementById("p-hp-info").innerText = players.map(p => `${p.name}:${p.hp}${p.trap?'🕸️':''}`).join(" | ");
-    document.getElementById("current-turn").innerText = `輪到：${players[currentTurnPlayer].name}`;
-    renderHand();
-}
-
-function rollDice() {
-    const p = players[currentTurnPlayer];
-    if (p.trap) { showMsg(`${p.name} 脫困！`); p.trap = false; endMovePhase(); return; }
-    let m = globalSonarEffect > 0 ? 1 : globalMaxSteps;
-    const dice = Math.floor(Math.random() * m) + 1;
-    document.getElementById("dice-result").innerText = `🎲 擲出 ${dice} 點`;
-    p.position = (p.position + dice) % 36;
-    checkGrid(p);
-    if (!pendingJudgePlayer) endMovePhase();
-}
-
-function endMovePhase() {
-    updateUI();
-    document.getElementById("roll-btn").disabled = true;
-    document.getElementById("skip-card-btn").disabled = false;
-    if (globalSonarEffect > 0) globalSonarEffect--;
-    globalMaxSteps = 3;
-}
-
-function checkGrid(player) {
-    const c = mapConfig[player.position];
-    if(c.type === "ocean" && c.garbage) {
-        player.bag.push(c.garbage); showMsg(`${player.name} 撿到 ${c.garbage.name}`);
-        c.garbage = null; document.querySelector(`#cell-${player.position} .cell-info`).innerText = "";
-    }
-    if(c.type === "station" && player.bag.length > 0) {
-        let sc = player.bag.reduce((s, g) => s + g.score, 0); teams[player.team].score += sc;
-        player.bag = []; showMsg(`回收獲得 ${sc} 分！`);
-    }
-    if(c.type === "event-cell") {
-        const e = eventPool[Math.floor(Math.random()*eventPool.length)];
-        if(e.id === "evt_whale") { pendingJudgePlayer = player; document.getElementById("judge-box").style.display = "block"; }
-        else {
-            showMsg(`事件：${e.name}\n${e.desc}`);
-            if(e.id === "evt_straw") { teams[player.team].score += 1; }
-            else if(e.id === "evt_oil") { players.forEach(pl => pl.hp = Math.max(0, pl.hp - 1)); globalMaxSteps = 2; }
-            else if(e.id === "evt_net") { let target = players[Math.floor(Math.random()*6)]; if(target.id!==player.id) target.trap = true; }
-            else if(e.id === "evt_sonar") { globalSonarEffect = 2; }
-            else if(e.id === "evt_earthquake") { players.forEach(pl => pl.position = Math.floor(Math.random()*36)); }
-            else if(e.id === "evt_turtles") { teams[player.team].score = Math.max(0, teams[player.team].score - 3); }
-        }
-    }
-}
-
-function renderHand() {
-    const box = document.getElementById("hand-cards"); box.innerHTML = "";
-    const h = teams[players[currentTurnPlayer].team].hand;
-    h.forEach((c, i) => {
-        const d = document.createElement("div"); d.className = `card-option ${selectedCardIndex === i ? 'selected' : ''}`;
-        d.onclick = () => { selectedCardIndex = i; renderHand(); document.getElementById("card-btn").disabled = false; };
-        d.innerHTML = `<b>${c.name}</b><span>${c.desc}</span>`;
-        box.appendChild(d);
-    });
-}
-
-function playCard() {
-    const p = players[currentTurnPlayer]; const team = teams[p.team]; const c = team.hand[selectedCardIndex];
-    if(c.id === "shrimp") { p.position = (p.position + 2) % 36; checkGrid(p); }
-    else if(c.id === "shark") { p.position = (p.position + 4) % 36; checkGrid(p); }
-    else if(c.id === "starfish") { p.hp = Math.min(5, p.hp + 1); }
-    else if(cardPool.id === "whale") { players.filter(pl => pl.team === p.team).forEach(pl => pl.hp = 5); }
-    else if(c.id === "octopus") { let targets = players.filter(pl => pl.team !== p.team); targets[Math.floor(Math.random()*targets.length)].trap = true; }
-    else if(c.id === "shell") {
-        let n = null, m = Infinity;
-        for(let i=0; i<36; i++) if(mapConfig[i].garbage) { let d = Math.abs(i-p.position); if(d<m){m=d; n=i;} }
-        if(n!==null) { p.position = n; checkGrid(p); }
-    }
-    team.hand.splice(selectedCardIndex, 1);
-    team.hand.push(cardPool[Math.floor(Math.random()*cardPool.length)]);
-    endTurn();
-}
-
-function handleJudge(win) {
-    const p = pendingJudgePlayer; document.getElementById("judge-box").style.display = "none";
-    if (win) { teams[p.team].score += 2; showMsg("贏家得 2 分"); }
-    else { teams[p.team].score += 1; showMsg("輸家得 1 分"); }
-    pendingJudgePlayer = null; endMovePhase();
-}
-
-function skipCard() { endTurn(); }
-function endTurn() {
-    currentTurnPlayer = (currentTurnPlayer + 1) % players.length; selectedCardIndex = null;
-    document.getElementById("roll-btn").disabled = false; document.getElementById("card-btn").disabled = true;
-    document.getElementById("skip-card-btn").disabled = true; document.getElementById("dice-result").innerText = "";
-    updateUI();
-}
-
-function checkAllGarbageCleared() {
-    // 計算地圖上還剩下的垃圾數量
-    const remainingGarbage = mapConfig.filter(cell => cell.type === "ocean" && cell.garbage !== null).length;
+function initGame(mode) {
+    gameMode = mode;
+    score = 0;
+    currentQuestionIndex = 0;
     
-    // 如果垃圾數量為 0，則觸發遊戲結束
-    if (remainingGarbage === 0) {
-        gameEnded = true;
-        handleSeaCleanedGameOver();
+    if (mode === 'normal') {
+        document.getElementById('game-title').innerText = "⏱️ 每日快速抽考";
+        // 快速抽考模式隱藏計時器
+        document.getElementById('timer-container').style.display = 'none';
+        document.getElementById('timer-text').style.display = 'none';
+        selectedQuestions = shuffle([...dataset]).slice(0, 10);
+    } else {
+        document.getElementById('game-title').innerText = "🔥 新人魔鬼總考";
+        // 魔鬼總考模式開啟計時器 UI
+        document.getElementById('timer-container').style.display = 'block';
+        document.getElementById('timer-text').style.display = 'block';
+        selectedQuestions = shuffle([...dataset]);
+    }
+    
+    document.getElementById('total-q').innerText = selectedQuestions.length;
+    document.getElementById('menu-view').style.display = 'none';
+    document.getElementById('game-view').style.display = 'block';
+    showQuestion();
+}
+
+function showQuestion() {
+    hasAnswered = false;
+    document.getElementById('next-btn').style.display = 'none';
+    
+    let currentQ = selectedQuestions[currentQuestionIndex];
+    document.getElementById('current-q').innerText = currentQuestionIndex + 1;
+    document.getElementById('score').innerText = score;
+    document.getElementById('question-text').innerText = currentQ.name;
+    document.getElementById('question-hint').innerText = currentQ.hint ? `糖冰參考: ${currentQ.hint}` : "正常規格";
+
+    let options = [currentQ.ans];
+    let wrongPool = dataset.filter(item => item.ans !== currentQ.ans).map(item => item.ans);
+    shuffle(wrongPool);
+    
+    for (let i = 0; i < 3; i++) {
+        if (wrongPool[i]) options.push(wrongPool[i]);
+    }
+    shuffle(options);
+
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+    
+    options.forEach(opt => {
+        const button = document.createElement('button');
+        button.className = 'btn-opt';
+        button.innerText = opt;
+        button.onclick = () => checkAnswer(button, opt, currentQ.ans);
+        optionsContainer.appendChild(button);
+    });
+
+    // 【新增】如果是魔鬼總考模式，每題重啟計時器
+    if (gameMode === 'hell') {
+        startTimer();
     }
 }
 
-// 初始化
-initMapData();
-teams.forEach(t => { for(let i=0; i<4; i++) t.hand.push(cardPool[Math.floor(Math.random()*cardPool.length)]); });
-renderBoard();
+// 【新增】啟動計時器邏輯
+function startTimer() {
+    clearInterval(timerId); // 清除上一次的計時
+    timeLeft = SECONDS_PER_QUESTION;
+    updateTimerUI();
+
+    timerId = setInterval(() => {
+        timeLeft--;
+        updateTimerUI();
+
+        if (timeLeft <= 0) {
+            clearInterval(timerId);
+            handleTimeout(); // 超時沒答，觸發自動判定
+        }
+    }, 1000);
+}
+
+// 【新增】每秒更新計時器視覺與顏色變更
+function updateTimerUI() {
+    document.getElementById('timer-text').innerText = `倒數: ${timeLeft}s`;
+    const bar = document.getElementById('timer-bar');
+    const percentage = (timeLeft / SECONDS_PER_QUESTION) * 100;
+    bar.style.width = `${percentage}%`;
+
+    // 剩餘 5 秒內，進度條變紅，文字變紅給予危機感
+    if (timeLeft <= 5) {
+        bar.classList.add('danger');
+        document.getElementById('timer-text').style.color = '#e53e3e';
+    } else {
+        bar.classList.remove('danger');
+        document.getElementById('timer-text').style.color = '#dd6b20';
+    }
+}
+
+// 【新增】時間到未答題的自動判定邏輯
+function handleTimeout() {
+    if (hasAnswered) return;
+    hasAnswered = true;
+
+    let currentQ = selectedQuestions[currentQuestionIndex];
+    const buttons = document.querySelectorAll('.btn-opt');
+    // 強制將正確答案亮綠燈
+    buttons.forEach(btn => {
+        if (btn.innerText === currentQ.ans) btn.classList.add('correct');
+    });
+
+    // 手機震動提示時間到
+    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([200, 100, 200]);
+
+    document.getElementById('timer-text').innerText = "時間到！❌";
+    document.getElementById('next-btn').style.display = 'block';
+}
+
+function checkAnswer(button, selected, correct) {
+    if (hasAnswered) return;
+    hasAnswered = true;
+
+    // 【新增】只要員工點選答案，立刻凍結倒數，方便有時間看正確配方
+    clearInterval(timerId);
+
+    const buttons = document.querySelectorAll('.btn-opt');
+    buttons.forEach(btn => {
+        if (btn.innerText === correct) btn.classList.add('correct');
+    });
+
+    if (selected === correct) {
+        score++;
+        document.getElementById('score').innerText = score;
+        if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(40);
+    } else {
+        button.classList.add('wrong');
+        if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([80, 40, 80]);
+    }
+
+    document.getElementById('next-btn').style.display = 'block';
+    
+    setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 120);
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < selectedQuestions.length) {
+        showQuestion();
+    } else {
+        endGame();
+    }
+}
+
+function endGame() {
+    clearInterval(timerId); // 【新增】保險起見清除計時
+    document.getElementById('game-view').style.display = 'none';
+    document.getElementById('summary-view').style.display = 'block';
+    
+    let finalPercentage = Math.round((score / selectedQuestions.length) * 100);
+    document.getElementById('final-score').innerText = finalPercentage;
+    
+    let evalText = `你在 ${selectedQuestions.length} 題中答對了 ${score} 題。<br><br>`;
+    
+    // 【修改】針對限時模式優化結算評語
+    if (finalPercentage === 100) {
+        evalText += "👑 太神了！在限時魔鬼考中完美全對通關！這速度與精準度直接升任吧台王！";
+    } else if (finalPercentage >= 80) {
+        evalText += "👍 頂住時間壓力了！表現很棒，實戰時一定可以忙而不亂！";
+    } else if (finalPercentage >= 60) {
+        evalText += "👌 雖然及格，但點選稍有猶豫，容易因為時間到被扣分。建議再多練習提升手速！";
+    } else {
+        evalText += "💪 面對計時慌張了吧？別擔心，多看幾次小抄熟悉配方，手速自然會變快！";
+    }
+    
+    document.getElementById('evaluation-text').innerHTML = evalText;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openCheatSheet() {
+    document.getElementById('menu-view').style.display = 'none';
+    document.getElementById('cheat-view').style.display = 'block';
+    
+    const listContainer = document.getElementById('cheat-sheet-list');
+    listContainer.innerHTML = '';
+    
+    dataset.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'cheat-item';
+        div.innerHTML = `
+            <div class="cheat-title">🍹 ${item.name}</div>
+            <div class="cheat-detail">✅ 配方：<strong>${item.ans}</strong></div>
+            <div class="cheat-hint">${item.hint ? '📌 糖冰：' + item.hint : ''}</div>
+        `;
+        listContainer.appendChild(div);
+    });
+}
+
+function backToMenu() {
+    clearInterval(timerId); // 【新增】回主選單清空計時器
+    document.getElementById('game-view').style.display = 'none';
+    document.getElementById('cheat-view').style.display = 'none';
+    document.getElementById('summary-view').style.display = 'none';
+    document.getElementById('menu-view').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 </script>
+
 </body>
 </html>
