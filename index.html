@@ -8,14 +8,11 @@
         * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro TC", "SF Pro Display", "PingFang TC", "Helvetica Neue", "Microsoft JhengHei", sans-serif;
-            /* 移除 iOS / Android 點擊按鈕時出現的預設灰底與延遲 */
             -webkit-tap-highlight-color: transparent;
-            /* 徹底禁止手機上因連續快點導致文字被選取/反藍 */
             -webkit-user-select: none;
             user-select: none;
         }
         
-        /* 修正手機版網頁在某些瀏覽器下拉會觸發重新整理(橡皮筋效果)的問題 */
         html, body {
             background-color: #f7fafc;
             color: #2d3748;
@@ -42,7 +39,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             text-align: center;
             margin-top: 5px;
-            /* 避免元件超出螢幕 */
             word-wrap: break-word;
         }
 
@@ -77,28 +73,30 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
-            /* 手機點擊動態縮放回饋 */
             transition: transform 0.05s ease;
         }
 
-        .btn-menu:active {
-            transform: scale(0.96);
-        }
+        .btn-menu:active { transform: scale(0.96); }
 
-        /* 【新增】精熟測驗綠色漸層按鈕 */
         .btn-menu.master {
             background: linear-gradient(135deg, #38a169, #2f855a);
             box-shadow: 0 4px 12px rgba(56, 161, 105, 0.25);
         }
 
-        .btn-menu.cheat {
-            background: linear-gradient(135deg, #4a5568, #2d3748);
-            box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
+        /* 【新增】填空模式按鈕樣式 (橘金色) */
+        .btn-menu.fill {
+            background: linear-gradient(135deg, #d69e2e, #b7791f);
+            box-shadow: 0 4px 12px rgba(214, 158, 46, 0.25);
         }
 
         .btn-menu.hell {
             background: linear-gradient(135deg, #e53e3e, #9b2c2c);
             box-shadow: 0 4px 12px rgba(229, 62, 62, 0.25);
+        }
+
+        .btn-menu.cheat {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
         }
 
         /* 遊戲計分板 */
@@ -115,194 +113,78 @@
             margin-bottom: 12px;
         }
 
-        /* 計時器進度條外框 */
         .timer-container {
-            width: 100%;
-            height: 6px;
-            background-color: #edf2f7;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            display: none; /* 預設隱藏，只有魔鬼總考開啟 */
+            width: 100%; height: 6px; background-color: #edf2f7;
+            border-radius: 3px; margin-bottom: 20px; overflow: hidden; display: none; 
         }
-
-        /* 計時器進度條動畫本體 */
         .timer-bar {
-            height: 100%;
-            width: 100%;
-            background-color: #ecc94b;
-            transition: width 1s linear;
+            height: 100%; width: 100%; background-color: #ecc94b; transition: width 1s linear;
         }
-
-        /* 時間倒數告急時的紅色樣式 */
-        .timer-bar.danger {
-            background-color: #e53e3e;
-        }
+        .timer-bar.danger { background-color: #e53e3e; }
 
         /* 題目卡片 */
         .card {
             background: linear-gradient(135deg, #553c9a, #3b4d9b);
-            color: white;
-            padding: 32px 14px;
-            border-radius: 18px;
-            font-size: 21px;
-            font-weight: bold;
-            margin-bottom: 22px;
+            color: white; padding: 32px 14px; border-radius: 18px;
+            font-size: 21px; font-weight: bold; margin-bottom: 22px;
             box-shadow: 0 6px 16px rgba(85, 60, 154, 0.2);
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            min-height: 120px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
-
         .card .hint {
-            font-size: 12px;
-            color: #e9d8fd;
-            margin-top: 10px;
-            font-weight: normal;
-            background: rgba(255,255,255,0.18);
-            padding: 3px 10px;
-            border-radius: 20px;
+            font-size: 12px; color: #e9d8fd; margin-top: 10px; font-weight: normal;
+            background: rgba(255,255,255,0.18); padding: 3px 10px; border-radius: 20px;
         }
 
         /* 選項按鈕區 */
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
+        .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
         .btn-opt {
-            background-color: #ffffff;
-            border: 2px solid #e2e8f0;
-            padding: 18px 14px;
-            border-radius: 16px;
-            font-size: 15px;
-            cursor: pointer;
-            text-align: left;
-            font-weight: 600;
-            line-height: 1.4;
-            color: #4a5568;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
-            transition: background-color 0.1s ease, transform 0.05s ease;
-            width: 100%;
-            word-break: break-all;
+            background-color: #ffffff; border: 2px solid #e2e8f0; padding: 18px 14px;
+            border-radius: 16px; font-size: 15px; cursor: pointer; text-align: left;
+            font-weight: 600; line-height: 1.4; color: #4a5568;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01); transition: all 0.1s ease; width: 100%;
         }
+        .btn-opt:active { background-color: #edf2f7; transform: scale(0.98); }
+        .btn-opt.correct { background-color: #c6f6d5 !important; border-color: #38a169 !important; color: #1c452f; animation: pop 0.25s ease; }
+        .btn-opt.wrong { background-color: #fed7d7 !important; border-color: #e53e3e !important; color: #652b2b; animation: shake 0.25s ease; }
 
-        .btn-opt:active {
-            background-color: #edf2f7;
-            transform: scale(0.98);
+        /* 【新增】填空區樣式 */
+        #fill-container { width: 100%; margin-bottom: 16px; text-align: center; }
+        .fill-input {
+            width: 100%; padding: 18px 16px; border: 2px solid #cbd5e0;
+            border-radius: 16px; font-size: 16px; margin-bottom: 12px;
+            -webkit-user-select: auto; user-select: auto; /* 允許輸入框選取與打字 */
+            outline: none; transition: border-color 0.2s;
+            color: #2d3748; font-weight: bold; text-align: center;
         }
-
-        /* 答對與答錯樣式（加入手機動態特效） */
-        .btn-opt.correct {
-            background-color: #c6f6d5 !important;
-            border-color: #38a169 !important;
-            color: #1c452f;
-            animation: pop 0.25s ease;
+        .fill-input:focus { border-color: #3182ce; }
+        .fill-submit {
+            width: 100%; padding: 16px; background-color: #4a5568; color: white;
+            border: none; border-radius: 14px; font-size: 16px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(74, 85, 104, 0.25);
         }
-
-        .btn-opt.wrong {
-            background-color: #fed7d7 !important;
-            border-color: #e53e3e !important;
-            color: #652b2b;
-            animation: shake 0.25s ease;
-        }
+        .fill-submit:active { transform: scale(0.98); }
+        .fill-feedback { margin-top: 12px; font-size: 16px; font-weight: bold; line-height: 1.5; }
 
         .next-btn {
-            background-color: #3182ce;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            font-size: 16px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: bold;
-            display: none;
-            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
-            margin-top: 10px;
+            background-color: #3182ce; color: white; border: none; width: 100%;
+            padding: 16px; font-size: 16px; border-radius: 14px; cursor: pointer;
+            font-weight: bold; display: none; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25); margin-top: 10px;
         }
 
-        /* 行動小抄區 - 優化手機端滑動與視窗高度 */
-        .cheat-sheet {
-            text-align: left;
-            max-height: 55vh;
-            overflow-y: auto;
-            margin-top: 15px;
-            padding-right: 4px;
-            /* 讓 iOS 滑動更順暢 */
-            -webkit-overflow-scrolling: touch;
-        }
+        /* 行動小抄區 */
+        .cheat-sheet { text-align: left; max-height: 55vh; overflow-y: auto; margin-top: 15px; padding-right: 4px; -webkit-overflow-scrolling: touch; }
+        .cheat-item { border-bottom: 1px solid #e2e8f0; padding: 12px 0; }
+        .cheat-title { font-weight: bold; color: #2b6cb0; font-size: 15px; }
+        .cheat-detail { font-size: 14px; color: #4a5568; margin-top: 4px; }
+        .cheat-hint { font-size: 11px; color: #a0aec0; margin-top: 2px; }
 
-        .cheat-item {
-            border-bottom: 1px solid #e2e8f0;
-            padding: 12px 0;
-        }
+        .back-btn { background-color: #718096; color: white; border: none; width: 100%; padding: 14px; font-size: 15px; border-radius: 12px; margin-top: 15px; font-weight: bold; }
+        .summary, #game-view, #cheat-view { display: none; }
+        .restart-btn { background-color: #38a169; color: white; border: none; width: 100%; padding: 16px; font-size: 16px; border-radius: 14px; font-weight: bold; margin-top: 15px; }
 
-        .cheat-title {
-            font-weight: bold;
-            color: #2b6cb0;
-            font-size: 15px;
-        }
-
-        .cheat-detail {
-            font-size: 14px;
-            color: #4a5568;
-            margin-top: 4px;
-        }
-
-        .cheat-hint {
-            font-size: 11px;
-            color: #a0aec0;
-            margin-top: 2px;
-        }
-
-        .back-btn {
-            background-color: #718096;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            font-size: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        /* 結束區 */
-        .summary, #game-view, #cheat-view {
-            display: none;
-        }
-
-        .restart-btn {
-            background-color: #38a169;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            font-size: 16px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
-            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.25);
-        }
-
-        /* 動畫效果 */
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     </style>
 </head>
 <body>
@@ -312,6 +194,7 @@
     <div class="menu-grid">
         <button class="btn-menu" onclick="initGame('normal')">⏱️ 每日快速抽考 (10題)</button>
         <button class="btn-menu master" onclick="initGame('master')">🏆 完整精熟測驗 (全29題 / 無計時)</button>
+        <button class="btn-menu fill" onclick="initGame('fill')">✍️ 終極填空大魔王 (全29題 / 無選項)</button>
         <button class="btn-menu hell" onclick="initGame('hell')">🔥 新人魔鬼總考 (全29題 + 限時)</button>
         <button class="btn-menu cheat" onclick="openCheatSheet()">📖 行動配料小抄 </button>
     </div>
@@ -319,7 +202,7 @@
 
 <div class="container" id="game-view">
     <h1 id="game-title">每日快速抽考</h1>
-    <div class="subtitle">請選出正確的材料配比</div>
+    <div class="subtitle" id="game-subtitle">請選出正確的材料配比</div>
     <div class="score-board">
         <div>題號: <span id="current-q">1</span> / <span id="total-q">10</span></div>
         <div id="timer-text" style="color: #dd6b20; display: none;">倒數: 15s</div>
@@ -332,7 +215,15 @@
         <div id="question-text">載入中...</div>
         <div class="hint" id="question-hint"></div>
     </div>
+    
     <div class="options" id="options-container"></div>
+
+    <div id="fill-container">
+        <input type="text" id="fill-input" class="fill-input" placeholder="請依照小抄格式輸入配方..." autocomplete="off">
+        <button id="fill-submit" class="fill-submit" onclick="checkFillAnswer()">送出答案</button>
+        <div id="fill-feedback" class="fill-feedback" style="display:none;"></div>
+    </div>
+
     <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題 👉</button>
 </div>
 
@@ -350,7 +241,6 @@
 </div>
 
 <script>
-// 依據原始圖片建立的 29 筆最精準資料庫
 const dataset = [
     { name: "紅茶拿鐵M (沒料)", hint: "40/30/20/10/5", ans: "100奶 100紅 100斯 或 120奶 140紅 140斯" },
     { name: "紅茶拿鐵L (沒料)", hint: "60/45/30/20/10", ans: "120奶 140紅 140斯 或 160奶 170紅 170斯" },
@@ -389,13 +279,19 @@ let selectedQuestions = [];
 let hasAnswered = false;
 let gameMode = 'normal';
 
-// 計時器相關變數
-let timeLeft = 8;
+let timeLeft = 15;
 let timerId = null;
-const SECONDS_PER_QUESTION = 8; //設定每題時間為 8 秒
+const SECONDS_PER_QUESTION = 15;
 
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
+}
+
+// 【新增】將全形數字/英文字母轉換為半形，增加寬容度
+function toHalfWidth(str) {
+    return str.replace(/[\uff01-\uff5e]/g, function(ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
+    });
 }
 
 function initGame(mode) {
@@ -403,19 +299,30 @@ function initGame(mode) {
     score = 0;
     currentQuestionIndex = 0;
     
+    // UI 重置
+    document.getElementById('timer-container').style.display = 'none';
+    document.getElementById('timer-text').style.display = 'none';
+    document.getElementById('options-container').style.display = 'flex';
+    document.getElementById('fill-container').style.display = 'none';
+    
     if (mode === 'normal') {
         document.getElementById('game-title').innerText = "⏱️ 每日快速抽考";
-        document.getElementById('timer-container').style.display = 'none';
-        document.getElementById('timer-text').style.display = 'none';
+        document.getElementById('game-subtitle').innerText = "請選出正確的材料配比";
         selectedQuestions = shuffle([...dataset]).slice(0, 10);
     } else if (mode === 'master') {
-        // 【新增】29題精熟測驗：顯示題數29題，但隱藏計時進度條與倒數文字
         document.getElementById('game-title').innerText = "🏆 完整精熟測驗";
-        document.getElementById('timer-container').style.display = 'none';
-        document.getElementById('timer-text').style.display = 'none';
+        document.getElementById('game-subtitle').innerText = "請選出正確的材料配比";
+        selectedQuestions = shuffle([...dataset]);
+    } else if (mode === 'fill') {
+        // 進入填空模式
+        document.getElementById('game-title').innerText = "✍️ 終極填空大魔王";
+        document.getElementById('game-subtitle').innerText = "憑記憶手動輸入精準配方！";
+        document.getElementById('options-container').style.display = 'none';
+        document.getElementById('fill-container').style.display = 'block';
         selectedQuestions = shuffle([...dataset]);
     } else {
         document.getElementById('game-title').innerText = "🔥 新人魔鬼總考";
+        document.getElementById('game-subtitle').innerText = "請選出正確的材料配比";
         document.getElementById('timer-container').style.display = 'block';
         document.getElementById('timer-text').style.display = 'block';
         selectedQuestions = shuffle([...dataset]);
@@ -437,35 +344,84 @@ function showQuestion() {
     document.getElementById('question-text').innerText = currentQ.name;
     document.getElementById('question-hint').innerText = currentQ.hint ? `糖冰參考: ${currentQ.hint}` : "正常規格";
 
-    let options = [currentQ.ans];
-    let wrongPool = dataset.filter(item => item.ans !== currentQ.ans).map(item => item.ans);
-    shuffle(wrongPool);
-    
-    for (let i = 0; i < 3; i++) {
-        if (wrongPool[i]) options.push(wrongPool[i]);
+    if (gameMode === 'fill') {
+        // 填空模式 UI 初始化
+        const fillInput = document.getElementById('fill-input');
+        fillInput.value = '';
+        fillInput.style.borderColor = '#cbd5e0';
+        document.getElementById('fill-submit').style.display = 'block';
+        document.getElementById('fill-feedback').style.display = 'none';
+    } else {
+        // 選擇題模式 UI 初始化
+        let options = [currentQ.ans];
+        let wrongPool = dataset.filter(item => item.ans !== currentQ.ans).map(item => item.ans);
+        shuffle(wrongPool);
+        
+        for (let i = 0; i < 3; i++) {
+            if (wrongPool[i]) options.push(wrongPool[i]);
+        }
+        shuffle(options);
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        options.forEach(opt => {
+            const button = document.createElement('button');
+            button.className = 'btn-opt';
+            button.innerText = opt;
+            button.onclick = () => checkAnswer(button, opt, currentQ.ans);
+            optionsContainer.appendChild(button);
+        });
     }
-    shuffle(options);
 
-    const optionsContainer = document.getElementById('options-container');
-    optionsContainer.innerHTML = '';
-    
-    options.forEach(opt => {
-        const button = document.createElement('button');
-        button.className = 'btn-opt';
-        button.innerText = opt;
-        button.onclick = () => checkAnswer(button, opt, currentQ.ans);
-        optionsContainer.appendChild(button);
-    });
-
-    // 如果是魔鬼總考模式，每題重啟計時器
     if (gameMode === 'hell') {
         startTimer();
     }
 }
 
-// 啟動計時器邏輯
+// 【新增】填空題的驗證邏輯
+function checkFillAnswer() {
+    if (hasAnswered) return;
+    
+    let inputEle = document.getElementById('fill-input');
+    let userInput = inputEle.value.trim();
+    if (!userInput) return; // 空白防呆
+    
+    hasAnswered = true;
+    let currentQ = selectedQuestions[currentQuestionIndex];
+    let correctAns = currentQ.ans;
+    
+    // 文字寬容處理：轉半形、去除所有空白、轉小寫比對
+    let cleanInput = toHalfWidth(userInput).replace(/\s+/g, '').toLowerCase();
+    let cleanCorrect = toHalfWidth(correctAns).replace(/\s+/g, '').toLowerCase();
+    
+    let feedbackEle = document.getElementById('fill-feedback');
+    feedbackEle.style.display = 'block';
+
+    if (cleanInput === cleanCorrect) {
+        score++;
+        document.getElementById('score').innerText = score;
+        inputEle.style.borderColor = '#38a169';
+        feedbackEle.innerHTML = `✅ 答對了！`;
+        feedbackEle.style.color = '#38a169';
+        if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(40);
+    } else {
+        inputEle.style.borderColor = '#e53e3e';
+        feedbackEle.innerHTML = `❌ 答錯了！<br><span style="font-size:13px; color:#718096; font-weight:normal;">你的輸入：${userInput}</span><br>正確解答：<span style="color:#e53e3e">${correctAns}</span>`;
+        feedbackEle.style.color = '#e53e3e';
+        if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([80, 40, 80]);
+    }
+    
+    document.getElementById('fill-submit').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'block';
+    
+    setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 120);
+}
+
 function startTimer() {
-    clearInterval(timerId); // 清除上一次的計時
+    clearInterval(timerId);
     timeLeft = SECONDS_PER_QUESTION;
     updateTimerUI();
 
@@ -475,19 +431,17 @@ function startTimer() {
 
         if (timeLeft <= 0) {
             clearInterval(timerId);
-            handleTimeout(); // 超時沒答，觸發自動判定
+            handleTimeout();
         }
     }, 1000);
 }
 
-// 每秒更新計時器視覺與顏色變更
 function updateTimerUI() {
     document.getElementById('timer-text').innerText = `倒數: ${timeLeft}s`;
     const bar = document.getElementById('timer-bar');
     const percentage = (timeLeft / SECONDS_PER_QUESTION) * 100;
     bar.style.width = `${percentage}%`;
 
-    // 剩餘 5 秒內，進度條變紅，文字變紅給予危機感
     if (timeLeft <= 5) {
         bar.classList.add('danger');
         document.getElementById('timer-text').style.color = '#e53e3e';
@@ -497,19 +451,16 @@ function updateTimerUI() {
     }
 }
 
-// 時間到未答題的自動判定邏輯
 function handleTimeout() {
     if (hasAnswered) return;
     hasAnswered = true;
 
     let currentQ = selectedQuestions[currentQuestionIndex];
     const buttons = document.querySelectorAll('.btn-opt');
-    // 強制將正確答案亮綠燈
     buttons.forEach(btn => {
         if (btn.innerText === currentQ.ans) btn.classList.add('correct');
     });
 
-    // 手機震動提示時間到
     if (window.navigator && window.navigator.vibrate) window.navigator.vibrate([200, 100, 200]);
 
     document.getElementById('timer-text').innerText = "時間到！❌";
@@ -520,7 +471,6 @@ function checkAnswer(button, selected, correct) {
     if (hasAnswered) return;
     hasAnswered = true;
 
-    // 只要員工點選答案，立刻凍結倒數，方便有時間看正確配方
     clearInterval(timerId);
 
     const buttons = document.querySelectorAll('.btn-opt');
@@ -554,7 +504,7 @@ function nextQuestion() {
 }
 
 function endGame() {
-    clearInterval(timerId); // 保險起見清除計時
+    clearInterval(timerId);
     document.getElementById('game-view').style.display = 'none';
     document.getElementById('summary-view').style.display = 'block';
     
@@ -563,15 +513,16 @@ function endGame() {
     
     let evalText = `你在 ${selectedQuestions.length} 題中答對了 ${score} 題。<br><br>`;
     
-    // 針對不同模式與分數優化結算評語
-    if (finalPercentage === 100) {
-        evalText += gameMode === 'hell' ? "👑 太神了！在限時魔鬼考中完美全對通關！這速度與精準度直接升任吧台王！" : "👑 滿分！全 29 題完全難不倒你！配料細節記得非常清楚，可以準備去挑戰限時魔鬼考囉！";
-    } else if (finalPercentage >= 80) {
-        evalText += "👍 表現很棒！大部份的調飲配比都滾瓜爛熟了，實戰時一定可以忙而不亂！";
-    } else if (finalPercentage >= 60) {
-        evalText += "👌 雖然及格了，但某些不常用的配料還是容易搞混。建議再多看幾次小抄補強一下！";
+    if (gameMode === 'fill') {
+        if (finalPercentage === 100) evalText += "🤯 神乎其技！竟然能在無選項提示下全對，你根本是會走路的配方表！";
+        else if (finalPercentage >= 80) evalText += "🔥 實力堅強！手寫輸入還能拿高分，代表你已經把配方深深印在腦海裡了！";
+        else if (finalPercentage >= 60) evalText += "👌 有點難對吧？只要把常搞混的幾個特例背起來，下次一定能過關！";
+        else evalText += "💪 填空題本來就是大魔王！建議先回到「選擇題」模式多練習幾次再來挑戰！";
     } else {
-        evalText += "💪 出錯餐會被客訴與浪費食材喔！別灰心，多看幾次小抄熟悉位置，再來重測一次！";
+        if (finalPercentage === 100) evalText += gameMode === 'hell' ? "👑 太神了！在限時魔鬼考中完美通關！這速度與精準度直接升任吧台王！" : "👑 滿分！全 29 題完全難不倒你！可以準備挑戰限時或填空魔鬼考囉！";
+        else if (finalPercentage >= 80) evalText += "👍 表現很棒！大部份的調飲配比都滾瓜爛熟了，實戰時一定可以忙而不亂！";
+        else if (finalPercentage >= 60) evalText += "👌 雖然及格了，但某些不常用的配料還是容易搞混。建議再多看幾次小抄補強一下！";
+        else evalText += "💪 出錯餐會被客訴與浪費食材喔！別灰心，多看幾次小抄熟悉位置再來重測！";
     }
     
     document.getElementById('evaluation-text').innerHTML = evalText;
@@ -589,7 +540,7 @@ function openCheatSheet() {
         const div = document.createElement('div');
         div.className = 'cheat-item';
         div.innerHTML = `
-            <div class="cheat-title"> ${item.name}</div>
+            <div class="cheat-title">${item.name}</div>
             <div class="cheat-detail">配方：<strong>${item.ans}</strong></div>
             <div class="cheat-hint">${item.hint ? '📌 糖冰：' + item.hint : ''}</div>
         `;
@@ -598,7 +549,7 @@ function openCheatSheet() {
 }
 
 function backToMenu() {
-    clearInterval(timerId); // 回主選單清空計時器
+    clearInterval(timerId);
     document.getElementById('game-view').style.display = 'none';
     document.getElementById('cheat-view').style.display = 'none';
     document.getElementById('summary-view').style.display = 'none';
